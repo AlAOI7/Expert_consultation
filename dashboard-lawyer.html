@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة تحكم المحامي</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #f8f9fa;
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+        }
+        
+        .sidebar {
+            width: 250px;
+            flex-shrink: 0;
+            background-color: #e0f7fa;
+            padding: 0;
+            border-left: 1px solid #00bcd433;
+            transition: all 0.3s;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 30px;
+            transition: all 0.3s;
+        }
+        
+        .sidebar .nav-link {
+            color: #333;
+            padding: 15px 20px;
+            transition: background-color 0.3s;
+            border-bottom: 1px solid #e0f7fa;
+            cursor: pointer;
+        }
+        .sidebar .nav-link.active {
+            background-color: #00bcd4;
+            color: white;
+            border-right: 5px solid #0097a7;
+        }
+        .sidebar .nav-link:hover:not(.active) {
+            background-color: #b2ebf2;
+        }
+        
+        .profile-header {
+            background-color: #00bcd4;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .profile-img {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 3px solid white;
+            object-fit: cover;
+        }
+        
+        .card-custom {
+            border-left: 5px solid #00bcd4;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            height: 100%;
+        }
+        
+        .btn-primary-custom {
+            background-color: #00bcd4;
+            border-color: #00bcd4;
+            color: white;
+            transition: background-color 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background-color: #0097a7;
+            border-color: #0097a7;
+            color: white;
+        }
+
+        .section {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .toggle-sidebar {
+            display: none;
+            position: fixed;
+            top: 15px;
+            right: 15px;
+            z-index: 1000;
+            background-color: #00bcd4;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 8px 12px;
+            font-size: 18px;
+        }
+        
+        .sidebar-hidden .sidebar {
+            transform: translateX(100%);
+            width: 0;
+        }
+        
+        .sidebar-hidden .content {
+            margin-right: 0;
+            width: 100%;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                min-height: auto;
+                border-left: none;
+                border-bottom: 1px solid #00bcd433;
+            }
+            .content {
+                padding: 15px;
+                margin-right: 0;
+            }
+            .sidebar .nav-link {
+                text-align: center;
+                border-right: none;
+            }
+            .sidebar .nav {
+                flex-direction: row !important;
+                overflow-x: auto;
+            }
+            .toggle-sidebar {
+                display: block;
+            }
+            .sidebar-hidden .sidebar {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <button class="toggle-sidebar" id="toggleSidebar">☰</button>
+
+    <div class="sidebar">
+        <div class="profile-header">
+            <img src="img/12.jpg" alt="صورة المحامي" class="profile-img mb-2">
+            <h5>طـلال بـنـدر</h5>
+            <p class="mb-0">محامي معتمد</p>
+        </div>
+        <nav class="nav flex-column flex-md-column mt-3"> 
+            <a class="nav-link active" data-target="dashboard">لوحة التحكم</a>
+            <a class="nav-link" data-target="session-settings">إعداد الجلسات</a>
+            <a class="nav-link" data-target="appointments">المواعيد القادمة</a>
+            <a class="nav-link" data-target="consultations">سجل الاستشارات</a>
+            <a class="nav-link" data-target="profile">تعديل الملف الشخصي</a>
+            <a class="nav-link text-danger" href="#">تسجيل الخروج</a>
+        </nav>
+    </div>
+
+    <div class="content">
+        <!-- قسم لوحة التحكم -->
+        <div id="dashboard" class="section active">
+            <h2 class="mb-4" style="color: #00bcd4;">مرحباً بك، طلال!</h2>
+
+            <div class="row g-4 mb-5">
+                <div class="col-md-4">
+                    <div class="card card-custom p-3">
+                        <h5 class="card-title" style="color: #00bcd4;">الاستشارات المنجزة</h5>
+                        <p class="card-text fs-2 fw-bold">145</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3">
+                        <h5 class="card-title" style="color: #00bcd4;">التقييم العام</h5>
+                        <p class="card-text fs-2 fw-bold">4.8 <span class="text-warning">★</span></p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card card-custom p-3">
+                        <h5 class="card-title" style="color: #00bcd4;">الرصيد الحالي</h5>
+                        <p class="card-text fs-2 fw-bold">3,500 <small>ر.س</small></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card p-4 mb-5 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">إعداد الجلسة القصيرة المدفوعة</h4>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="duration" class="form-label">مدة الجلسة (بالدقائق)</label>
+                            <select class="form-select" id="duration">
+                                <option value="10">10 دقائق</option>
+                                <option value="15" selected>15 دقيقة</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price" class="form-label">سعر الجلسة (بالريال السعودي)</label>
+                            <input type="number" class="form-control" id="price" value="150" min="50" required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom mt-3">حفظ الإعدادات</button>
+                </form>
+            </div>
+
+            <div class="card p-4 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">المواعيد القادمة (اليوم)</h4>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="img/13.jpg" class="rounded-circle me-3" alt="Client" style="width: 40px; height: 40px;">
+                            <span>أحمد العلي - (قضية عقارية)</span>
+                        </div>
+                        <span class="badge bg-info text-dark">10:00 صباحاً</span>
+                        <button class="btn btn-sm btn-primary-custom">بدء الاتصال</button>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="img/14.jpg" class="rounded-circle me-3" alt="Client" style="width: 40px; height: 40px;">
+                            <span>فاطمة محمد - (استشارة شخصية)</span>
+                        </div>
+                        <span class="badge bg-warning text-dark">11:30 صباحاً</span>
+                        <button class="btn btn-sm btn-outline-secondary" disabled>انتظار الدفع</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- قسم إعداد الجلسات -->
+        <div id="session-settings" class="section">
+            <h2 class="mb-4" style="color: #00bcd4;">إعداد الجلسات</h2>
+            
+            <div class="card p-4 mb-4 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">إعداد الجلسة القصيرة المدفوعة</h4>
+                <form>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="session-duration" class="form-label">مدة الجلسة (بالدقائق)</label>
+                            <select class="form-select" id="session-duration">
+                                <option value="10">10 دقائق</option>
+                                <option value="15" selected>15 دقيقة</option>
+                                <option value="20">20 دقيقة</option>
+                                <option value="30">30 دقيقة</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="session-price" class="form-label">سعر الجلسة (بالريال السعودي)</label>
+                            <input type="number" class="form-control" id="session-price" value="150" min="50" required>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="session-type" class="form-label">نوع الجلسة</label>
+                            <select class="form-select" id="session-type">
+                                <option value="video">مكالمة فيديو</option>
+                                <option value="audio" selected>مكالمة صوتية</option>
+                                <option value="chat">محادثة نصية</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="advance-notice" class="form-label">الإشعار المسبق (بالساعات)</label>
+                            <input type="number" class="form-control" id="advance-notice" value="24" min="1" required>
+                        </div>
+                    </div>
+                    <div class="form-check mb-3">
+                        <input class="form-check-input" type="checkbox" id="auto-confirm" checked>
+                        <label class="form-check-label" for="auto-confirm">
+                            الموافقة التلقائية على الجلسات
+                        </label>
+                    </div>
+                    <button type="submit" class="btn btn-primary-custom mt-3">حفظ الإعدادات</button>
+                </form>
+            </div>
+            
+            <div class="card p-4 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">إعدادات التوافر</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h5>أيام العمل</h5>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="sunday" checked>
+                            <label class="form-check-label" for="sunday">الأحد</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="monday" checked>
+                            <label class="form-check-label" for="monday">الإثنين</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="tuesday" checked>
+                            <label class="form-check-label" for="tuesday">الثلاثاء</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="wednesday" checked>
+                            <label class="form-check-label" for="wednesday">الأربعاء</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="thursday" checked>
+                            <label class="form-check-label" for="thursday">الخميس</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="friday">
+                            <label class="form-check-label" for="friday">الجمعة</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="saturday">
+                            <label class="form-check-label" for="saturday">السبت</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h5>ساعات العمل</h5>
+                        <div class="row mb-3">
+                            <div class="col">
+                                <label for="start-time" class="form-label">من</label>
+                                <input type="time" class="form-control" id="start-time" value="09:00">
+                            </div>
+                            <div class="col">
+                                <label for="end-time" class="form-label">إلى</label>
+                                <input type="time" class="form-control" id="end-time" value="17:00">
+                            </div>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="break-time" checked>
+                            <label class="form-check-label" for="break-time">استراحة من 12:00 إلى 13:00</label>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" class="btn btn-primary-custom mt-4">حفظ إعدادات التوافر</button>
+            </div>
+        </div>
+
+        <!-- قسم المواعيد القادمة -->
+        <div id="appointments" class="section">
+            <h2 class="mb-4" style="color: #00bcd4;">المواعيد القادمة</h2>
+            
+            <div class="card p-4 mb-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 style="color: #00bcd4;">اليوم</h4>
+                    <div>
+                        <button class="btn btn-outline-secondary me-2">الأمس</button>
+                        <button class="btn btn-primary-custom">غداً</button>
+                    </div>
+                </div>
+                
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="img/15.jpg" class="rounded-circle me-3" alt="Client" style="width: 40px; height: 40px;">
+                            <div>
+                                <span class="fw-bold">أحمد العلي</span>
+                                <br>
+                                <small class="text-muted">قضية عقارية</small>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge bg-info text-dark fs-6">10:00 صباحاً</span>
+                            <br>
+                            <small class="text-muted">مدة الجلسة: 15 دقيقة</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary-custom me-1">بدء الاتصال</button>
+                            <button class="btn btn-sm btn-outline-secondary">إعادة جدولة</button>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="img/16.jpg" class="rounded-circle me-3" alt="Client" style="width: 40px; height: 40px;">
+                            <div>
+                                <span class="fw-bold">فاطمة محمد</span>
+                                <br>
+                                <small class="text-muted">استشارة شخصية</small>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge bg-warning text-dark fs-6">11:30 صباحاً</span>
+                            <br>
+                            <small class="text-muted">مدة الجلسة: 15 دقيقة</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-outline-secondary me-1" disabled>انتظار الدفع</button>
+                            <button class="btn btn-sm btn-outline-danger">إلغاء</button>
+                        </div>
+                    </li>
+                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                        <div class="d-flex align-items-center">
+                            <img src="img/17.jpg" class="rounded-circle me-3" alt="Client" style="width: 40px; height: 40px;">
+                            <div>
+                                <span class="fw-bold">سالم الحربي</span>
+                                <br>
+                                <small class="text-muted">قضية تجارية</small>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="badge bg-success text-dark fs-6">02:00 مساءً</span>
+                            <br>
+                            <small class="text-muted">مدة الجلسة: 30 دقيقة</small>
+                        </div>
+                        <div>
+                            <button class="btn btn-sm btn-primary-custom me-1">بدء الاتصال</button>
+                            <button class="btn btn-sm btn-outline-secondary">إعادة جدولة</button>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="card p-4 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">الأسبوع القادم</h4>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>الموعد</th>
+                                <th>العميل</th>
+                                <th>نوع الجلسة</th>
+                                <th>الحالة</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>الأحد 15 مايو</td>
+                                <td>10:00 ص</td>
+                                <td>ناصر القحطاني</td>
+                                <td>قضية عمالية</td>
+                                <td><span class="badge bg-success">مؤكد</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>الإثنين 16 مايو</td>
+                                <td>11:30 ص</td>
+                                <td>لطيفة السعد</td>
+                                <td>استشارة أسرية</td>
+                                <td><span class="badge bg-warning">بانتظار الدفع</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>الثلاثاء 17 مايو</td>
+                                <td>03:00 م</td>
+                                <td>خالد الفهد</td>
+                                <td>قضية عقارية</td>
+                                <td><span class="badge bg-success">مؤكد</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- قسم سجل الاستشارات -->
+        <div id="consultations" class="section">
+            <h2 class="mb-4" style="color: #00bcd4;">سجل الاستشارات</h2>
+            
+            <div class="card p-4 mb-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 style="color: #00bcd4;">إحصائيات الاستشارات</h4>
+                    <div class="btn-group">
+                        <button class="btn btn-outline-secondary active">هذا الشهر</button>
+                        <button class="btn btn-outline-secondary">الشهر الماضي</button>
+                        <button class="btn btn-outline-secondary">هذا العام</button>
+                    </div>
+                </div>
+                
+                <div class="row text-center">
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-custom p-3">
+                            <h5 class="card-title" style="color: #00bcd4;">إجمالي الاستشارات</h5>
+                            <p class="card-text fs-2 fw-bold">24</p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-custom p-3">
+                            <h5 class="card-title" style="color: #00bcd4;">متوسط التقييم</h5>
+                            <p class="card-text fs-2 fw-bold">4.9 <span class="text-warning">★</span></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-custom p-3">
+                            <h5 class="card-title" style="color: #00bcd4;">إجمالي الإيرادات</h5>
+                            <p class="card-text fs-2 fw-bold">3,600 <small>ر.س</small></p>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <div class="card card-custom p-3">
+                            <h5 class="card-title" style="color: #00bcd4;">متوسط المدة</h5>
+                            <p class="card-text fs-2 fw-bold">17 <small>دقيقة</small></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card p-4 shadow-sm">
+                <h4 class="mb-4" style="color: #00bcd4;">سجل الاستشارات</h4>
+                
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>التاريخ</th>
+                                <th>العميل</th>
+                                <th>نوع الاستشارة</th>
+                                <th>المدة</th>
+                                <th>المبلغ</th>
+                                <th>التقييم</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10 مايو 2023</td>
+                                <td>أحمد العلي</td>
+                                <td>قضية عقارية</td>
+                                <td>15 دقيقة</td>
+                                <td>150 ر.س</td>
+                                <td><span class="text-warning">★★★★★</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>8 مايو 2023</td>
+                                <td>فاطمة محمد</td>
+                                <td>استشارة شخصية</td>
+                                <td>20 دقيقة</td>
+                                <td>200 ر.س</td>
+                                <td><span class="text-warning">★★★★☆</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>5 مايو 2023</td>
+                                <td>سالم الحربي</td>
+                                <td>قضية تجارية</td>
+                                <td>30 دقيقة</td>
+                                <td>300 ر.س</td>
+                                <td><span class="text-warning">★★★★★</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2 مايو 2023</td>
+                                <td>ناصر القحطاني</td>
+                                <td>قضية عمالية</td>
+                                <td>25 دقيقة</td>
+                                <td>250 ر.س</td>
+                                <td><span class="text-warning">★★★★☆</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-primary">تفاصيل</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <nav aria-label="Page navigation" class="mt-4">
+                    <ul class="pagination justify-content-center">
+                        <li class="page-item disabled">
+                            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">السابق</a>
+                        </li>
+                        <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                        <li class="page-item"><a class="page-link" href="#">2</a></li>
+                        <li class="page-item"><a class="page-link" href="#">3</a></li>
+                        <li class="page-item">
+                            <a class="page-link" href="#">التالي</a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+
+        <!-- قسم تعديل الملف الشخصي -->
+        <div id="profile" class="section">
+            <h2 class="mb-4" style="color: #00bcd4;">تعديل الملف الشخصي</h2>
+            
+            <div class="card p-4 shadow-sm">
+                <form>
+                    <div class="row">
+                        <div class="col-md-4 text-center mb-4">
+                            <img src="https://via.placeholder.com/150" alt="صورة المحامي" class="rounded-circle mb-3" style="width: 150px; height: 150px; object-fit: cover;">
+                            <div>
+                                <button type="button" class="btn btn-outline-primary btn-sm">تغيير الصورة</button>
+                            </div>
+                        </div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="first-name" class="form-label">الاسم الأول</label>
+                                    <input type="text" class="form-control" id="first-name" value="طلال">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="last-name" class="form-label">اسم العائلة</label>
+                                    <input type="text" class="form-control" id="last-name" value="بندر">
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label">البريد الإلكتروني</label>
+                                <input type="email" class="form-control" id="email" value="talal@lawyer.com">
+                            </div>
+                            <div class="mb-3">
+                                <label for="phone" class="form-label">رقم الهاتف</label>
+                                <input type="tel" class="form-control" id="phone" value="+966500000000">
+                            </div>
+                            <div class="mb-3">
+                                <label for="specialization" class="form-label">التخصص</label>
+                                <select class="form-select" id="specialization">
+                                    <option selected>القانون التجاري</option>
+                                    <option>القانون المدني</option>
+                                    <option>القانون الجنائي</option>
+                                    <option>قانون الأسرة</option>
+                                    <option>القانون العقاري</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="bio" class="form-label">نبذة عن المحامي</label>
+                                <textarea class="form-control" id="bio" rows="4">محامي معتمد مع أكثر من 10 سنوات من الخبرة في المجال القانوني. متخصص في القضايا التجارية والعقارية.</textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary-custom">حفظ التغييرات</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // تبديل القسم النشط عند النقر على رابط القائمة الجانبية
+            $('.sidebar .nav-link').on('click', function(e) {
+                e.preventDefault();
+                
+                // إزالة النشاط من جميع الروابط
+                $('.sidebar .nav-link').removeClass('active');
+                
+                // إضافة النشاط للرابط المحدد
+                $(this).addClass('active');
+                
+                // إخفاء جميع الأقسام
+                $('.section').removeClass('active');
+                
+                // إظهار القسم المطلوب
+                const target = $(this).data('target');
+                $('#' + target).addClass('active');
+                
+                // إغلاق الشريط الجانبي على الأجهزة المحمولة
+                if ($(window).width() <= 768) {
+                    $('body').addClass('sidebar-hidden');
+                }
+            });
+            
+            // تبديل الشريط الجانبي على الأجهزة المحمولة
+            $('#toggleSidebar').on('click', function() {
+                $('body').toggleClass('sidebar-hidden');
+            });
+            
+            // إغلاق الشريط الجانبي عند النقر خارجيه على الأجهزة المحمولة
+            $(document).on('click', function(e) {
+                if ($(window).width() <= 768 && 
+                    !$(e.target).closest('.sidebar').length && 
+                    !$(e.target).is('#toggleSidebar') && 
+                    !$('body').hasClass('sidebar-hidden')) {
+                    $('body').addClass('sidebar-hidden');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

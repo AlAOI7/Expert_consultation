@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محادثة مع الخبير</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8f9fa; }
+        .chat-container {
+            height: 85vh; /* ارتفاع المحادثة */
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        .chat-header {
+            background-color: #00bcd4;
+            color: white;
+            padding: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        .chat-input {
+            padding: 15px;
+            background-color: #f0f8ff; /* خلفية سماوية فاتحة لمنطقة الإدخال */
+            border-top: 1px solid #ddd;
+        }
+        /* تصميم فقاعات المحادثة */
+        .message {
+            margin-bottom: 15px;
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 15px;
+        }
+        .message-client {
+            background-color: #00bcd4; /* أزرق فاتح للعميل */
+            color: white;
+            align-self: flex-end;
+            margin-right: 0;
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        .message-expert {
+            background-color: #e9ecef; /* رمادي فاتح للخبير/النظام */
+            color: #333;
+            align-self: flex-start;
+            margin-left: 0;
+            margin-right: auto;
+            border-bottom-left-radius: 5px;
+        }
+        .message-system {
+            background-color: #fff3cd; /* تنبيه أصفر فاتح */
+            color: #856404;
+            text-align: center;
+            width: 100%;
+            margin-left: 0;
+            margin-right: 0;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container py-4">
+        <div class="chat-container">
+            
+            <div class="chat-header">
+                <a href="client-browse.html" class="text-white me-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                      <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                    </svg>
+                </a>
+                <h5 class="mb-0">محادثة مع: المحامي سعود القحطاني</h5>
+            </div>
+
+            <div class="chat-messages" id="chatMessages">
+                <div class="message message-system">
+                    <p class="mb-0 fw-bold">هذه استشارة مدفوعة. يرجى البدء بطلب تفاصيل الجلسة.</p>
+                </div>
+                
+                <div class="message message-client">
+                    مرحباً أستاذ سعود، لدي استفسار عاجل حول صياغة عقد شراكة جديد. هل يمكننا البدء؟
+                </div>
+                
+                <div class="message message-expert" style="font-style: italic; color: #00bcd4;">
+                    **رد تلقائي:** تم استلام رسالتك، شكراً لتواصلك! سيتم الرد عليك في أقرب وقت ممكن.
+                </div>
+
+                <div class="message message-expert">
+                    أهلاً بك، يمكنك إرسال مسودة العقد أولاً لتوفير الوقت في الجلسة المباشرة.
+                </div>
+            </div>
+
+            <div class="chat-input">
+                <form id="chatForm" class="d-flex">
+                    <input type="text" id="messageInput" class="form-control form-control-lg me-2" placeholder="اكتب رسالتك..." required>
+                    <button type="submit" class="btn btn-primary-custom btn-lg">إرسال</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            const $chatMessages = $('#chatMessages');
+            const systemReply = "**رد تلقائي:** يرجى الانتباه: هذه جلسة مدفوعة. يرجى إتمام عملية الدفع لتأكيد موعد الجلسة، شكراً لتفهمك.";
+            
+            // دالة إضافة رسالة للمحادثة
+            function addMessage(text, type) {
+                const messageHtml = `<div class="message ${type}">${text}</div>`;
+                $chatMessages.append(messageHtml);
+                // التمرير لأسفل تلقائياً
+                $chatMessages.scrollTop($chatMessages[0].scrollHeight);
+            }
+
+            // عند إرسال النموذج (الرسالة)
+            $('#chatForm').on('submit', function(e) {
+                e.preventDefault();
+                const messageText = $('#messageInput').val().trim();
+
+                if (messageText !== '') {
+                    // 1. إضافة رسالة العميل
+                    addMessage(messageText, 'message-client');
+                    $('#messageInput').val(''); // مسح حقل الإدخال
+
+                    // 2. محاكاة الرد التلقائي (بعد فترة قصيرة)
+                    setTimeout(function() {
+                        // مثال لرد النظام التلقائي إذا كانت الرسالة تتضمن كلمات مثل "دفع" أو "موعد"
+                        if (messageText.includes('دفع') || messageText.includes('موعد')) {
+                             addMessage(systemReply, 'message-system');
+                        } else {
+                            // رد تلقائي عام (يمكن أن يستخدم كـ "الخبير مشغول")
+                             addMessage('**رد تلقائي:** تم استلام رسالتك، الخبير مشغول حالياً وسيرد عليك قريباً.', 'message-expert');
+                        }
+                    }, 1500); // تأخير 1.5 ثانية للرد التلقائي
+                }
+            });
+        });
+    </script>
+</body>
+</html>

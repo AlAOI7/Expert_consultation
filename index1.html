@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة الخبراء - تسجيل الدخول</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* إضافة خطوط جوجل عربية مناسبة */
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body {
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f0f8ff; /* خلفية سماوية فاتحة جداً */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .login-card {
+            max-width: 450px;
+            width: 100%;
+            padding: 40px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+            background-color: white;
+            border-top: 5px solid #00bcd4; /* شريط علوي بلون السيان */
+        }
+        .btn-primary-custom {
+            background-color: #00bcd4; /* أزرق سيان مميز */
+            border-color: #00bcd4;
+            transition: background-color 0.3s;
+        }
+        .btn-primary-custom:hover {
+            background-color: #0097a7;
+            border-color: #0097a7;
+        }
+        .form-check-label {
+            cursor: pointer;
+        }
+        .expert-fields {
+            margin-top: 20px;
+            border: 1px solid #00bcd433;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #e0f7fa; /* خلفية خفيفة لحقول الخبير */
+            display: none; /* يتم إظهاره بواسطة jQuery */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <h3 class="text-center mb-4" style="color: #00bcd4;">تسجيل الدخول إلى منصة الخبراء</h3>
+
+        <form id="loginForm">
+            <div class="mb-3">
+                <label class="form-label fw-bold">أنت تود الدخول كـ:</label>
+                <div class="d-flex justify-content-around">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="userType" id="typeClient" value="client" checked>
+                        <label class="form-check-label" for="typeClient">عميل</label>
+                    </div>
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="userType" id="typeExpert" value="expert">
+                        <label class="form-check-label" for="typeExpert">خبير</label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="email" class="form-label">البريد الإلكتروني</label>
+                <input type="email" class="form-control" id="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">كلمة المرور</label>
+                <input type="password" class="form-control" id="password" required>
+            </div>
+
+            <div id="expertFields" class="expert-fields">
+                <div class="mb-3">
+                    <label for="expertType" class="form-label fw-bold" style="color: #00bcd4;">نوع الخبير</label>
+                    <select class="form-select" id="expertType" disabled>
+                        <option value="">اختر التخصص...</option>
+                        <option value="lawyer">محامي</option>
+                        <option value="doctor">طبيب</option>
+                        <option value="engineer">مهندس</option>
+                        <option value="marketer">مسوق</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <label for="license" class="form-label">رقم الترخيص / الهيئة</label>
+                    <input type="text" class="form-control" id="license" disabled>
+                </div>
+            </div>
+
+            <div class="d-grid gap-2 mt-4">
+                <button type="submit" class="btn btn-lg btn-primary-custom">تسجيل الدخول</button>
+            </div>
+            
+            <div class="text-center mt-3">
+                <a href="#" class="text-decoration-none" style="color: #00bcd4;">هل نسيت كلمة المرور؟</a>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>لا تملك حساباً؟ <a href="#" class="text-decoration-none fw-bold" style="color: #00bcd4;">انضم إلينا الآن</a></p>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+
+</body>
+</html>

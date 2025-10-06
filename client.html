@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>استعراض الخبراء</title>
+    <style>
+        /* ======================== الأنماط العامة ======================== */
+        body {
+            margin: 0;
+            font-family: 'Arial', sans-serif;
+            background: #e0f7fa; /* لون خلفية فاتح */
+            padding-bottom: 300px; /* مسافة كافية لشريط الدعم في الأسفل */
+        }
+        
+        /* ======================== القائمة الجانبية (Side Menu) ======================== */
+        .menu-btn { 
+            position: fixed; top: 20px; right: 20px; cursor: pointer; z-index: 100;
+            background: #fff; padding: 5px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .menu-btn div { width: 30px; height: 3px; background: #00796b; margin: 6px 0; }
+
+        .side-menu { 
+            position: fixed; top: 0; right: -300px; width: 300px; height: 100%; 
+            background: #fff; padding: 20px 10px; transition: right 0.4s; z-index: 99;
+            box-shadow: -5px 0 15px rgba(0,0,0,0.3);
+            display: flex; flex-direction: column;
+        }
+        .side-menu.open { right: 0; }
+        .side-menu h3 { text-align: center; color: #004d40; margin-top: 50px; }
+        .side-menu a { 
+            display: block; padding: 12px 15px; margin: 8px 10px; cursor: pointer; 
+            text-decoration: none; color: #004d40; border-radius: 8px; 
+            transition: background 0.2s;
+        }
+        .side-menu a:hover { background: #b2ebf2; }
+        .side-menu a.active { background: #b2ebf2; font-weight: bold; }
+        
+        .close-btn {
+            position: absolute; top: 20px; left: 20px;
+            font-size: 24px; font-weight: bold; color: #004d40; cursor: pointer;
+            line-height: 1; /* لتجنب أي ارتفاع إضافي */
+        }
+
+        /* ======================== فلاتر التصنيف ======================== */
+        .category-filter { 
+            text-align: center; padding: 60px 10px 20px; background: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .category-filter button {
+            padding: 8px 15px; margin: 5px; border: 2px solid #00796b; 
+            background: #fff; color: #00796b; border-radius: 20px; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .category-filter button.active, .category-filter button:hover {
+            background: #00796b; color: #fff;
+        }
+        
+        /* ======================== بطاقات الخبراء (Experts Grid) ======================== */
+        .experts-grid { 
+            display: flex; flex-wrap: wrap; justify-content: center; 
+            gap: 30px; padding: 30px 10px;
+        }
+        .expert-card { 
+            width: 250px; background: var(--bg-color, #fff); text-align: center; 
+            padding: 20px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+        /* تأثير الارتفاع المطلوب */
+        .expert-card.elevated {
+            transform: translateY(-8px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
+
+        .profile-image { 
+            width: 90px; height: 90px; margin: 0 auto 15px; border-radius: 50%; 
+            background-size: cover; background-position: center; border: 3px solid #00796b;
+        }
+        .expert-card h3 { margin: 5px 0; color: #004d40; }
+        .expert-card p { margin: 3px 0; color: #00796b; font-size: 14px; }
+
+        .action-section button {
+            width: 100%; padding: 10px 0; margin-top: 10px; border: none; 
+            border-radius: 8px; cursor: pointer; font-weight: bold;
+            transition: background 0.2s;
+        }
+        .booking-btn { background: #ffb74d; color: #3e2723; } /* حجز موعد */
+        .chat-btn { background: #00796b; color: #fff; } /* بدء المحادثة */
+        .booking-btn[data-available="false"] { background: #bdbdbd; cursor: not-allowed; }
+
+        /* ======================== شريط أسفل الصفحة (Support Footer Bar) ======================== */
+        .fixed-support-bar {
+            position: fixed;
+            bottom: 0; left: 0; width: 100%;
+            background: #002d62; /* أزرق غامق جداً */
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.3);
+        }
+        .bar-content {
+            padding: 20px 15px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .center-text h2 { font-size: 24px; margin-bottom: 10px; border-bottom: 2px solid #b2ebf2; padding-bottom: 10px; }
+        .center-text p { font-size: 16px; line-height: 1.6; }
+        
+        .help-section {
+            background: #003c80; /* لون أزرق أفتح قليلاً للقسم الداخلي */
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+        }
+        .help-section h3 { margin: 0 0 10px 0; color: #ffb74d; }
+        .help-section a { color: #fff; text-decoration: none; display: block; margin: 5px 0; }
+        
+    </style>
+</head>
+<body>
+
+    <div class="menu-btn" onclick="document.getElementById('side-menu').classList.toggle('open')">
+        <div></div><div></div><div></div>
+    </div>
+
+    <nav id="side-menu" class="side-menu">
+        <div class="close-btn" onclick="document.getElementById('side-menu').classList.remove('open')">❌</div>
+        <h3>القائمة الرئيسية</h3>
+        <a onclick="navigateToPage('homepage.html')">الصفحة الرئيسية</a>
+        <a onclick="navigateToPage('appointments.html')">المواعيد</a>
+        <a onclick="navigateToPage('consultations.html')">الاستشارات</a>
+        <a onclick="navigateToPage('first-login.html')">تسجيل الخروج</a>
+    </nav>
+
+    <div class="category-filter">
+        <h1>اختر خبيراً</h1>
+        <button class="category-btn active" data-category="all">الكل</button>
+        <button class="category-btn" data-category="تسويق">تسويق</button>
+        <button class="category-btn" data-category="تصميم">تصميم</button>
+        <button class="category-btn" data-category="برمجة">برمجة</button>
+    </div>
+
+    <main class="experts-grid" id="experts-container">
+        </main>
+    
+    <<!-- div class="fixed-support-bar">
+        <div class="bar-content">
+            <div class="center-text">
+                <h2>استشارة في لحظتها</h2>
+                <p>جلسات فورية مع مختصين في مجالات متعددة، بوقت قصير وتجربة سلسة.<br><strong>استشارة اليوم، قرار الغد.</strong></p>
+            </div>
+            
+            <div class="help-section">
+                <h3>هل تحتاج الى مساعدة؟</h3>
+                <p>رقم التواصل: +966 5x xxx xx xx</p>
+                <p>البريد الإلكتروني: support@experts.com</p>
+            </div>
+        </div>
+    </div> -->
+
+    <script>
+        const EXPERTS_DATA = [
+            { id: 1, name: "أحمد الفهد", specialty: "خبير تسويق رقمي", category: "تسويق", isAvailable: true, image: 'https://i.pravatar.cc/100?img=1', backgroundColor: "#F0F8FF" },
+            { id: 2, name: "سارة عبد الله", specialty: "مستشارة UX/UI", category: "تصميم", isAvailable: false, image: 'https://i.pravatar.cc/100?img=2', backgroundColor: "#FFF0F5" },
+            { id: 3, name: "يوسف العلي", specialty: "مطوّر برمجيات", category: "برمجة", isAvailable: true, image: 'https://i.pravatar.cc/100?img=3', backgroundColor: "#F5FFFA" },
+            { id: 4, name: "ليلى حسن", specialty: "محللة بيانات", category: "تسويق", isAvailable: true, image: 'https://i.pravatar.cc/100?img=4', backgroundColor: "#E6E6FA" },
+        ];
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            renderExperts('all');
+
+            document.querySelectorAll('.category-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const category = e.target.dataset.category;
+                    document.querySelector('.category-btn.active').classList.remove('active');
+                    e.target.classList.add('active');
+                    renderExperts(category);
+                });
+            });
+        });
+        
+        function renderExperts(filterCategory) {
+            const container = document.getElementById('experts-container');
+            container.innerHTML = ''; 
+
+            const filtered = EXPERTS_DATA.filter(expert => 
+                filterCategory === 'all' || expert.category === filterCategory
+            );
+
+            filtered.forEach(expert => {
+                const card = document.createElement('div');
+                card.className = 'expert-card';
+                card.dataset.expertId = expert.id;
+                card.style.setProperty('--bg-color', expert.backgroundColor); 
+
+                card.innerHTML = `
+                    <div class="profile-image" style="background-image: url('${expert.image}');"></div>
+                    <h3>${expert.name}</h3>
+                    <p>${expert.specialty}</p>
+                    <div class="action-section">
+                        <button class="booking-btn" data-available="${expert.isAvailable}">${expert.isAvailable ? 'حجز موعد' : 'غير متاح للحجز'}</button>
+                        <button class="chat-btn" onclick="navigateToChat(${expert.id})">بدء المحادثة</button>
+                    </div>
+                `;
+
+                // منطق تأثير الارتفاع (Elevation Effect)
+                card.addEventListener('mouseenter', () => card.classList.add('elevated'));
+                card.addEventListener('mouseleave', () => card.classList.remove('elevated'));
+
+                container.appendChild(card);
+            });
+        }
+        
+        function navigateToChat(expertId) {
+            window.location.href = `chat.html?expertId=${expertId}`;
+        }
+
+        function navigateToPage(pageUrl) {
+            if (pageUrl === 'first-login.html') {
+                 // تسجيل الخروج: الانتقال إلى صفحة تسجيل الدخول الأولى
+                 alert('تم تسجيل الخروج. سيتم نقلك إلى صفحة التسجيل.');
+                 window.location.href = 'first-login.html'; // يفترض وجود هذه الصفحة
+            } else {
+                 // باقي الصفحات (واجهات شكلية)
+                 alert('تم النقر على ' + pageUrl.replace('.html', ''));
+                 // يمكنك إضافة منطق توجيه حقيقي هنا
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محادثة فورية مع الخبير</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #f8f9fa;
+            overflow-x: hidden; 
+        }
+        
+        /* تنسيقات الشريط الجانبي (Sidebar) */
+        .sidebar-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1050; 
+            top: 0;
+            right: 0;
+            background-color: #00796b;
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .sidebar-nav .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar-nav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #f1f1f1;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar-nav a:hover {
+            color: #00bcd4; 
+            background-color: #005a4e;
+        }
+
+        /* تنسيقات الشات الأساسية */
+        .chat-wrapper { transition: margin-right .5s; }
+        .chat-container {
+            height: 90vh; 
+            display: flex;
+            flex-direction: column;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        /* ألوان الخلفية المخصصة لمنطقة الرسائل */
+        .bg-lawyer { background-color: #e0f7fa; } 
+        .bg-doctor { background-color: #e8f5e9; } 
+        .bg-engineer { background-color: #fff3e0; } 
+        .bg-marketer { background-color: #f3e5f5; } 
+
+        .chat-header-card {
+            background-color: white;
+            border-bottom: 2px solid #00bcd4;
+            padding: 15px;
+        }
+        .chat-messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .chat-input {
+            padding: 15px;
+            background-color: #f8f9fa; /* خلفية الإدخال */
+            border-top: 1px solid #ddd;
+        }
+        
+        /* ** تصميم فقاعات المحادثة (الواقعية والعكس) ** */
+        .message-row {
+            display: flex;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .message {
+            max-width: 75%;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* رسائل الخبير/البوت تظهر على اليمين */
+        .message-bot-row {
+            justify-content: flex-end; /* عكس التوجيه هنا */
+        }
+        .message-bot {
+            background-color: #f0f0f0; /* لون افتح للخبير */
+            color: #333;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 5px;
+        }
+
+        /* رسائل العميل/المستخدم تظهر على اليسار */
+        .message-client-row {
+            justify-content: flex-start; /* عكس التوجيه هنا */
+        }
+        .message-client {
+            background-color: #00bcd4; 
+            color: white;
+            border-bottom-right-radius: 15px;
+            border-bottom-left-radius: 5px;
+        }
+        
+        /* تنسيق الوقت */
+        .message-time {
+            position: absolute;
+            font-size: 0.75em;
+            bottom: 5px;
+        }
+        .message-client .message-time {
+            color: rgba(255, 255, 255, 0.7); 
+            right: 10px; /* الوقت على اليمين لرسائل العميل */
+        }
+        .message-bot .message-time {
+            color: rgba(51, 51, 51, 0.5); 
+            left: 10px; /* الوقت على اليسار لرسائل البوت */
+        }
+
+        .message-client { padding-right: 55px; } /* مسافة للوقت */
+        .message-bot { padding-left: 55px; } /* مسافة للوقت */
+
+        /* تنسيق الأزرار المقترحة */
+        .suggestion-btn {
+            background-color: #e6f7ff;
+            color: #00796b;
+            border: 1px solid #00796b;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            border-radius: 20px;
+        }
+        .suggestion-btn:hover {
+            background-color: #00796b;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+        .final-follow-up {
+            font-style: italic;
+            color: #0097a7;
+            font-weight: bold;
+            text-align: center;
+            width: 100%;
+        }
+        /* زر إظهار الاقتراحات (اللمبة) */
+        .toggle-suggestions-btn {
+            background: none;
+            border: none;
+            color: #00bcd4;
+            font-size: 1.5rem;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .toggle-suggestions-btn:hover {
+            color: #0097a7;
+        }
+        .toggle-suggestions-btn.active {
+            color: #ffc107;
+        }
+        /* زر الإرسال الأنيق */
+        .btn-send-custom {
+            background-color: #00bcd4; 
+            border-color: #00bcd4;
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn-send-custom:hover { 
+            background-color: #0097a7; 
+            transform: scale(1.05);
+        }
+        
+        /* تنسيق زر حجز الموعد */
+        .btn-booking-custom {
+            background-color: #ff9800;
+            border-color: #ff9800;
+            color: white;
+            transition: all 0.3s;
+        }
+        .btn-booking-custom:hover {
+            background-color: #f57c00;
+            border-color: #f57c00;
+            transform: scale(1.05);
+        }
+        
+        /* تنسيق نافذة حجز الموعد */
+        .booking-modal .modal-header {
+            background-color: #00bcd4;
+            color: white;
+        }
+        .booking-modal .modal-footer {
+            justify-content: space-between;
+        }
+        
+        /* تحسين مظهر اقتراحات البوت */
+        .suggestions-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        /* تنسيق رسالة الترحيب */
+        .welcome-message {
+            text-align: center;
+            color: #00796b;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        
+        /* تنسيق نافذة الدفع */
+        .payment-required-modal .modal-header {
+            background-color: #ff9800;
+            color: white;
+        }
+        .payment-required-modal .modal-body {
+            text-align: center;
+            padding: 30px;
+        }
+        .payment-icon {
+            font-size: 4rem;
+            color: #ff9800;
+            margin-bottom: 20px;
+        }
+        .payment-details {
+            background-color: #fff3e0;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+    
+    <div id="mySidebar" class="sidebar-nav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a href="profile.html"><i class="bi bi-person-circle me-2"></i> الملف الشخصي</a>
+        <a href="my-appointments.html"><i class="bi bi-calendar-check me-2"></i> مواعيدي</a>
+        <a href="chat-dynamic.html"><i class="bi bi-chat-dots me-2"></i> محادثاتي الأخرى</a>
+        <a href="#"><i class="bi bi-gear me-2"></i> الإعدادات</a>
+        <hr class="text-white mx-3">
+        <a href="welcome.html" class="text-danger"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a>
+    </div>
+
+    <!-- نافذة حجز الموعد -->
+    <div class="modal fade booking-modal" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">حجز موعد مع الخبير</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <div class="mb-3">
+                            <label for="bookingDate" class="form-label">اختر التاريخ</label>
+                            <input type="date" class="form-control" id="bookingDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bookingTime" class="form-label">اختر الوقت</label>
+                            <select class="form-select" id="bookingTime" required>
+                                <option value="" selected disabled>اختر الوقت المناسب</option>
+                                <option value="09:00">09:00 صباحاً</option>
+                                <option value="10:00">10:00 صباحاً</option>
+                                <option value="11:00">11:00 صباحاً</option>
+                                <option value="12:00">12:00 ظهراً</option>
+                                <option value="13:00">01:00 مساءً</option>
+                                <option value="14:00">02:00 مساءً</option>
+                                <option value="15:00">03:00 مساءً</option>
+                                <option value="16:00">04:00 مساءً</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sessionType" class="form-label">نوع الجلسة</label>
+                            <select class="form-select" id="sessionType" required>
+                                <option value="video" selected>مكالمة فيديو</option>
+                                <option value="audio">مكالمة صوتية</option>
+                                <option value="chat">محادثة نصية</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">ملاحظات إضافية (اختياري)</label>
+                            <textarea class="form-control" id="notes" rows="3" placeholder="أي ملاحظات إضافية تود إضافتها..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-booking-custom" id="confirmBooking">تأكيد الحجز</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة الدفع المطلوب -->
+    <div class="modal fade payment-required-modal" id="paymentRequiredModal" tabindex="-1" aria-labelledby="paymentRequiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentRequiredModalLabel">إتمام عملية الدفع</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="payment-icon">
+                        <i class="bi bi-credit-card"></i>
+                    </div>
+                    <h4 class="mb-3">حجزك في انتظار الدفع</h4>
+                    <p class="mb-4">لإكمال عملية الحجز، يرجى إتمام عملية الدفع لتأمين موعدك مع الخبير.</p>
+                    
+                    <div class="payment-details">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>الخبير:</span>
+                            <strong id="paymentExpertName">المحامي سعود القحطاني</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>التاريخ والوقت:</span>
+                            <strong id="paymentDateTime">الأربعاء, 8 أكتوبر - 01:30 م</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>نوع الجلسة:</span>
+                            <strong id="paymentSessionType">مكالمة فيديو</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>المبلغ المستحق:</span>
+                            <strong id="paymentAmount">180 ر.س</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>ملاحظة:</strong> سيتم إلغاء الحجز تلقائياً إذا لم يتم الدفع خلال 15 دقيقة.
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success btn-lg" id="proceedToPayment">
+                        <i class="bi bi-credit-card me-2"></i> الانتقال للدفع
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container pt-4 chat-wrapper" id="chatWrapper">
+        <div class="chat-container">
+            
+            <div class="chat-header-card" id="expertInfoCard">
+                </div>
+
+            <div class="chat-messages" id="chatMessages">
+                </div>
+
+            <div class="chat-input">
+                <div class="suggestions-container" id="botSuggestions" style="display: none;">
+                    <h6 class="welcome-message">اختر أحد الاقتراحات التالية:</h6>
+                    <div class="d-grid gap-2" id="suggestionsList">
+                    </div>
+                </div>
+                <form id="chatForm" class="d-flex align-items-center">
+                    <button type="button" id="toggleSuggestions" class="toggle-suggestions-btn p-0">
+                        <i class="bi bi-lightbulb"></i>
+                    </button>
+                    <input type="text" id="messageInput" class="form-control form-control-lg me-2" placeholder="اكتب رسالتك..." required>
+                    
+                    <button type="submit" class="btn btn-send-custom btn-lg p-2 px-3">
+                        <i class="bi bi-send-fill fs-5"></i>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ** منطق القائمة الجانبية (Sidebar) **
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("chatWrapper").style.marginRight = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("chatWrapper").style.marginRight = "0";
+        }
+        
+        $(document).ready(function() {
+            const $chatMessages = $('#chatMessages');
+            const $expertInfoCard = $('#expertInfoCard');
+            const $botSuggestions = $('#botSuggestions');
+            const $suggestionsList = $('#suggestionsList');
+            const $toggleSuggestions = $('#toggleSuggestions');
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            const paymentRequiredModal = new bootstrap.Modal(document.getElementById('paymentRequiredModal'));
+            
+            // قراءة بيانات الخبير المخزنة (أو بيانات افتراضية للاختبار)
+            let expertData;
+            try {
+                 expertData = JSON.parse(localStorage.getItem('currentExpert'));
+            } catch (e) {
+                expertData = { id: 'expert1', name: 'المحامي سعود القحطاني', profession: 'محامي شركات', available: 'true' };
+            }
+
+            // تعريف البوت والردود المطلوبة (تم إضافة اقتراحات متنوعة)
+            const botResponses = {
+                intro: `مرحباً بك في خدمة المحادثة الفورية! 👋 <br>يسعدنا تواصلك معنا. يمكنك اختيار أحد الاقتراحات أدناه أو كتابة استفسارك مباشرة.`,
+                followUp: `هل تحتاج إلى مساعدة إضافية؟ يمكنك اختيار أحد الاقتراحات أو كتابة سؤالك مباشرة.`,
+                bookingConfirmed: `تم تأكيد حجز موعدك بنجاح! 📅 <br>الرجاء إتمام عملية الدفع لتأمين الموعد.`,
+                paymentRequired: `يرجى إتمام عملية الدفع لتأكيد حجز موعدك.`,
+                suggestions: [
+                    { id: 1, text: 'كيف أحجز جلسة استشارية؟', reply: 'للحجز، يرجى النقر على زر "حجز موعد" في الأعلى وتحديد الوقت المتاسب. يتم تأكيد الحجز بعد الدفع.' },
+                    { id: 2, text: 'ما هي تكلفة الجلسة الاستشارية؟', reply: 'أسعار الجلسات تبدأ من 150 ريال لمدة 15 دقيقة. تختلف الأسعار حسب مدة ونوع الاستشارة.' },
+                    { id: 3, text: 'هل يمكنني إعادة جدولة موعدي؟', reply: 'نعم، يمكنك إعادة جدولة موعدك من خلال صفحة "مواعيدي" في القائمة الجانبية، بشرط أن يكون قبل 24 ساعة من الموعد الأصلي.' },
+                    { id: 4, text: 'ما هي طرق الدفع المتاحة؟', reply: 'نقبل الدفع ببطاقات الائتمان والمدى وحوالات بنكية وتحويلات إلكترونية.' },
+                    { id: 5, text: 'هل الجلسات سرية وآمنة؟', reply: 'نعم، جميع الجلسات سرية ومشفرة. نحن نلتزم بمعايير الخصوصية والأمان لحماية معلوماتك.' },
+                    { id: 6, text: 'كيف أستعد للجلسة الأولى؟', reply: 'ننصح بتجهيز الأسئلة والوثائق المتعلقة باستفسارك مسبقاً لتحقيق أقصى استفادة من الجلسة.' },
+                    { id: 7, text: 'ما هي مدة الجلسة الاعتيادية؟', reply: 'مدة الجلسة القياسية هي 15 دقيقة، مع إمكانية تمديدها حسب الحاجة.' },
+                    { id: 8, text: 'هل يمكنني التواصل مع الخبير بعد انتهاء الجلسة؟', reply: 'نعم، يمكنك التواصل عبر البريد الإلكتروني أو حجز جلسة متابعة للحصول على استشارات إضافية.' },
+                    { id: 9, text: 'ما هي مجالات تخصص الخبير؟', reply: 'الخبير متخصص في القضايا التجارية والعقود والمنازعات القانونية المتعلقة بالشركات.' },
+                    { id: 10, text: 'كيف أحصل على فاتورة للجلسة؟', reply: 'سيتم إرسال الفاتورة تلقائياً إلى بريدك الإلكتروني بعد انتهاء الجلسة.' }
+                ]
+            };
+            
+            // دالة للحصول على الوقت الحالي بتنسيق واقعي (مثال: 10:45 ص)
+            function getCurrentTime() {
+                const now = new Date();
+                const hours = now.getHours();
+                const minutes = now.getMinutes().toString().padStart(2, '0');
+                const ampm = hours >= 12 ? 'م' : 'ص';
+                const formattedHours = hours % 12 || 12;
+                return `${formattedHours}:${minutes} ${ampm}`;
+            }
+
+            // ** دالة إضافة رسالة للمحادثة (محدثة للواقعية) **
+            function addMessage(text, type, isFollowUp = false) {
+                const messageClass = `message-${type}`;
+                const rowClass = `message-${type}-row`;
+                const followUpClass = isFollowUp ? 'final-follow-up' : '';
+                const messageTime = getCurrentTime();
+
+                const messageHtml = `
+                    <div class="message-row ${rowClass}">
+                        <div class="message ${messageClass} ${followUpClass}">
+                            <p class="mb-0">${text}</p>
+                            ${!isFollowUp ? `<span class="message-time">${messageTime}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+                $chatMessages.append(messageHtml);
+                $chatMessages.scrollTop($chatMessages[0].scrollHeight);
+            }
+
+            // ** وظيفة إعداد شاشة الشات **
+            function initializeChat() {
+                if (expertData) {
+                    // تحديد الخلفية
+                    let backgroundClass = 'bg-lawyer';
+                    const professionType = expertData.profession.split(' ')[0];
+                    switch(professionType) {
+                        case 'طبيب': backgroundClass = 'bg-doctor'; break;
+                        case 'مهندس': backgroundClass = 'bg-engineer'; break;
+                        case 'مسوق': backgroundClass = 'bg-marketer'; break;
+                    }
+                    $chatMessages.addClass(backgroundClass);
+                    
+                    // عرض بيانات الخبير في الكارد العلوي
+                    const statusText = expertData.available === 'true' ? 
+                                       `<span class="text-success fw-bold">متاح للحجز</span>` : 
+                                       `<span class="text-danger fw-bold">غير متاح</span>`;
+                                
+                    $expertInfoCard.html(`
+                        <div class="d-flex align-items-center">
+                            <a href="client-browse.html.html" class="text-dark me-3 text-decoration-none">
+                                <i class="bi bi-arrow-right fs-4"></i>
+                            </a>
+                            <img src="img/16.jpg" class="rounded-circle me-3" style="width: 50px; height: 50px;">
+                            <div>
+                                <h5 class="mb-0">${expertData.name}</h5>
+                                <small class="text-muted">${expertData.profession} - ${statusText}</small>
+                            </div>
+                            <button class="btn btn-sm btn-booking-custom mx-2" id="openBookingModal"><i class="bi bi-calendar-check me-1"></i> حجز موعد</button>
+                            <button class="btn btn-outline-secondary ms-auto" onclick="openNav()"><i class="bi bi-list"></i></button>
+                        </div>
+                    `);
+                    
+                    // بدء المحادثة برسالة البوت الترحيبية
+                    addMessage(botResponses.intro, 'bot');
+                    
+                    // عرض اقتراحات البوت كأزرار (مخفية مبدئياً)
+                    botResponses.suggestions.forEach(q => {
+                        $suggestionsList.append(`<button class="btn suggestion-btn" data-id="${q.id}">${q.text}</button>`);
+                    });
+                    
+                    // إضافة حدث النقر لزر حجز الموعد
+                    $('#openBookingModal').on('click', function() {
+                        // تعيين الحد الأدنى للتاريخ (اليوم)
+                        const today = new Date().toISOString().split('T')[0];
+                        $('#bookingDate').attr('min', today);
+                        
+                        // فتح نافذة حجز الموعد
+                        bookingModal.show();
+                    });
+                    
+                    // تأكيد الحجز
+                    $('#confirmBooking').on('click', function() {
+                        const bookingDate = $('#bookingDate').val();
+                        const bookingTime = $('#bookingTime').val();
+                        const sessionType = $('#sessionType').val();
+                        const notes = $('#notes').val();
+                        
+                        if (bookingDate && bookingTime && sessionType) {
+                            // إضافة رسالة تأكيد الحجز في المحادثة
+                            addMessage(`لقد قمت بحجز موعد بتاريخ ${formatDate(bookingDate)} الساعة ${bookingTime} (${sessionType === 'video' ? 'مكالمة فيديو' : sessionType === 'audio' ? 'مكالمة صوتية' : 'محادثة نصية'})`, 'client');
+                            
+                            // إغلاق نافذة الحجز
+                            bookingModal.hide();
+                            
+                            // إعادة تعيين النموذج
+                            $('#bookingForm')[0].reset();
+                            
+                            // رد البوت بعد الحجز
+                            setTimeout(() => {
+                                addMessage(botResponses.bookingConfirmed, 'bot');
+                            }, 1000);
+                            
+                            // إظهار نافذة الدفع المطلوب بعد تأكيد الحجز
+                            setTimeout(() => {
+                                // تعبئة بيانات الدفع في النافذة المنبثقة
+                                $('#paymentExpertName').text(expertData.name);
+                                $('#paymentDateTime').text(`${formatDate(bookingDate)} - ${bookingTime}`);
+                                $('#paymentSessionType').text(sessionType === 'video' ? 'مكالمة فيديو' : sessionType === 'audio' ? 'مكالمة صوتية' : 'محادثة نصية');
+                                $('#paymentAmount').text('180 ر.س');
+                                
+                                // إظهار نافذة الدفع المطلوب
+                                paymentRequiredModal.show();
+                            }, 2500);
+                        } else {
+                            alert('يرجى ملء جميع الحقول المطلوبة');
+                        }
+                    });
+                }
+            }
+            
+            // ** دالة لتحويل التاريخ إلى تنسيق عربي **
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('ar-SA', options);
+            }
+            
+            // ** منطق إظهار/إخفاء الاقتراحات بزر اللمبة **
+            $toggleSuggestions.on('click', function() {
+                $botSuggestions.slideToggle(300);
+                $(this).toggleClass('active');
+                
+                // تغيير أيقونة اللمبة
+                const $icon = $(this).find('i');
+                if ($botSuggestions.is(':visible')) {
+                    $icon.removeClass('bi-lightbulb').addClass('bi-lightbulb-fill');
+                } else {
+                    $icon.removeClass('bi-lightbulb-fill').addClass('bi-lightbulb');
+                }
+            });
+
+            // ** منطق الرد على الاقتراحات **
+            $suggestionsList.on('click', '.suggestion-btn', function() {
+                const qId = $(this).data('id');
+                const selectedQ = botResponses.suggestions.find(q => q.id === qId);
+
+                if (selectedQ) {
+                    // 1. رسالة العميل (الاقتراح الذي اختاره)
+                    addMessage(selectedQ.text, 'client');
+                    
+                    // 2. إخفاء الأزرار بعد الاختيار
+                    $botSuggestions.slideUp(300);
+                    $toggleSuggestions.removeClass('active');
+                    $toggleSuggestions.find('i').removeClass('bi-lightbulb-fill').addClass('bi-lightbulb');
+                    
+                    // 3. رسالة رد البوت (الإجابة المخصصة)
+                    setTimeout(() => {
+                        addMessage(selectedQ.reply, 'bot');
+                    }, 500);
+                    
+                    // 4. رسالة المتابعة النهائية
+                    setTimeout(() => {
+                        addMessage(botResponses.followUp, 'bot', true);
+                    }, 1500);
+                }
+            });
+
+            // ** منطق إرسال رسالة العميل (رسالة نصية عادية) **
+            $('#chatForm').on('submit', function(e) {
+                e.preventDefault();
+                const messageText = $('#messageInput').val().trim();
+
+                if (messageText !== '') {
+                    // رسالة العميل
+                    addMessage(messageText, 'client');
+                    $('#messageInput').val(''); 
+                    
+                    // إخفاء الأزرار إذا لم تكن مخفية
+                    $botSuggestions.slideUp(300); 
+                    $toggleSuggestions.removeClass('active');
+                    $toggleSuggestions.find('i').removeClass('bi-lightbulb-fill').addClass('bi-lightbulb');
+
+                    // رسالة المتابعة النهائية (رد البوت إذا لم يتم اختيار سؤال)
+                    setTimeout(() => {
+                         addMessage(botResponses.followUp, 'bot', true);
+                    }, 1000);
+                }
+            });
+            
+            // ** الانتقال إلى صفحة الدفع **
+            $('#proceedToPayment').on('click', function() {
+    // الانتقال إلى صفحة الدفع (booking.html)
+    window.location.href = 'booking.html';
+    
+    // إغلاق النافذة المنبثقة
+    paymentRequiredModal.hide();
+});
+            
+            // إضافة تأثير عند الكتابة في حقل الإدخال
+            $('#messageInput').on('focus', function() {
+                $(this).css('box-shadow', '0 0 0 0.2rem rgba(0, 188, 212, 0.25)');
+            }).on('blur', function() {
+                $(this).css('box-shadow', 'none');
+            });
+            
+            initializeChat();
+        });
+    </script>
+</body>
+</html>

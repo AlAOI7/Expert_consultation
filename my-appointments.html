@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>مواعيدي المحجوزة</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { 
+            font-family: 'Tajawal', sans-serif; 
+            background-color: #f8f9fa;
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .navbar-custom { background-color: #00bcd4; } 
+        .appointment-card {
+            border-left: 5px solid #00bcd4;
+            border-radius: 8px;
+            transition: box-shadow 0.3s, transform 0.3s;
+        }
+        .appointment-card:hover {
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        .expert-info {
+            border-right: 3px solid #00bcd4;
+            padding-right: 15px;
+        }
+        .btn-primary-custom {
+            background-color: #00bcd4; 
+            border-color: #00bcd4;
+            color: white;
+        }
+        .btn-primary-custom:hover { 
+            background-color: #0097a7; 
+            border-color: #0097a7;
+        }
+        
+        /* تنسيقات الشريط الجانبي (Sidebar) */
+        .sidebar-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1050; 
+            top: 0;
+            right: 0;
+            background-color: #0097a7; 
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .sidebar-nav .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar-nav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #f1f1f1;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar-nav a:hover {
+            color: #00bcd4;
+            background-color: #00796b;
+        }
+        
+        .content-wrapper {
+            flex-grow: 1;
+            transition: margin-right 0.5s;
+        }
+        
+        /* تنسيقات إضافية */
+        .status-badge {
+            font-size: 0.8rem;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        .profile-img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #00bcd4;
+        }
+        
+        /* تحسين التبويبات */
+        .nav-tabs .nav-link.active {
+            background-color: #00bcd4;
+            color: white;
+            border-color: #00bcd4;
+        }
+        .nav-tabs .nav-link {
+            color: #00bcd4;
+        }
+        
+        /* تنسيق النوافذ المنبثقة */
+        .modal-header {
+            background-color: #00bcd4;
+            color: white;
+        }
+        .rating-stars {
+            font-size: 1.5rem;
+            color: #ffc107;
+            cursor: pointer;
+        }
+        .rating-stars .bi-star {
+            color: #e0e0e0;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+    <!-- القائمة الجانبية -->
+    <div id="mySidebar" class="sidebar-nav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a href="client-browse.html"><i class="bi bi-house-door me-2"></i> الصفحة الرئيسية</a>
+        <a href="client-browse.html"><i class="bi bi-search me-2"></i> تصفح الخبراء</a>
+        <a href="my-appointments.html" class="active"><i class="bi bi-calendar-check me-2"></i> مواعيدي</a>
+        <a href="chat-dynamic.html"><i class="bi bi-chat-dots me-2"></i> المحادثات</a>
+        <a href="profile.html"><i class="bi bi-person-circle me-2"></i> الملف الشخصي</a>
+        <a href="#"><i class="bi bi-gear me-2"></i> الإعدادات</a>
+        <hr class="text-white mx-3">
+        <a href="welcome.html" class="text-danger"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a>
+    </div>
+
+    <div class="content-wrapper" id="mainContent">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
+            <div class="container">
+                <button class="navbar-toggler me-3" type="button" onclick="openNav()" aria-label="Toggle navigation" style="border: none;">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                
+                <a class="navbar-brand fw-bold" href="client-browse.html">منصة الخبراء</a>
+                <div class="collapse navbar-collapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="client-browse.html">تصفح الخبراء</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" aria-current="page" href="my-appointments.html">مواعيدي</a>
+                        </li>
+                    </ul>
+                </div>
+                <a href="profile.html" class="btn btn-outline-light me-2"><i class="bi bi-person-fill"></i> الملف الشخصي</a>
+            </div>
+        </nav>
+
+        <div class="container py-5">
+            <h2 class="mb-4" style="color: #00bcd4;"><i class="bi bi-calendar-check me-2"></i> مواعيدي المحجوزة</h2>
+
+            <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="upcoming-tab" data-bs-toggle="tab" data-bs-target="#upcoming" type="button" role="tab" aria-controls="upcoming" aria-selected="true">
+                        القادمة <span class="badge bg-primary">2</span>
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="past-tab" data-bs-toggle="tab" data-bs-target="#past" type="button" role="tab" aria-controls="past" aria-selected="false">
+                        المنتهية <span class="badge bg-secondary">4</span>
+                    </button>
+                </li>
+            </ul>
+
+            <div class="tab-content" id="myTabContent">
+                
+                <div class="tab-pane fade show active" id="upcoming" role="tabpanel" aria-labelledby="upcoming-tab">
+                    
+                    <div class="card appointment-card p-3 mb-3 shadow-sm">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/23.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">د. نورة السالم</h5>
+                                        <p class="text-muted mb-0">تخصص: طبيب أسرة</p>
+                                        <span class="badge bg-success status-badge">قريباً</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-success"><i class="bi bi-calendar-event me-2"></i> الأربعاء, 8 أكتوبر</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-primary"><i class="bi bi-clock me-2"></i> 01:30 م</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-primary-custom me-2" data-appointment-id="1"><i class="bi bi-headset"></i> انضمام</button>
+                                <button class="btn btn-sm btn-outline-danger" data-appointment-id="1"><i class="bi bi-x-circle"></i> إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card appointment-card p-3 mb-3 shadow-sm">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/11.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">ريم العتيبي</h5>
+                                        <p class="text-muted mb-0">تخصص: استراتيجيات تسويق</p>
+                                        <span class="badge bg-info status-badge">مؤكد</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-success"><i class="bi bi-calendar-event me-2"></i> الأحد, 12 أكتوبر</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-primary"><i class="bi bi-clock me-2"></i> 10:00 ص</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-primary-custom me-2" data-appointment-id="2"><i class="bi bi-headset"></i> انضمام</button>
+                                <button class="btn btn-sm btn-outline-danger" data-appointment-id="2"><i class="bi bi-x-circle"></i> إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade" id="past" role="tabpanel" aria-labelledby="past-tab">
+                    <div class="card appointment-card p-3 mb-3 shadow-sm bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/12.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">سعود القحطاني</h5>
+                                        <p class="text-muted mb-0">تخصص: محامي شركات</p>
+                                        <span class="badge bg-secondary status-badge">مكتمل</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-calendar-event me-2"></i> 1 سبتمبر</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-clock me-2"></i> 05:00 م</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-outline-secondary me-2" data-appointment-id="3"><i class="bi bi-chat-text"></i> مشاهدة المحادثة</button>
+                                <button class="btn btn-sm btn-warning" data-appointment-id="3"><i class="bi bi-star"></i> تقييم</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card appointment-card p-3 mb-3 shadow-sm bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/13.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">خالد المهنا</h5>
+                                        <p class="text-muted mb-0">تخصص: مهندس مدني</p>
+                                        <span class="badge bg-secondary status-badge">مكتمل</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-calendar-event me-2"></i> 25 أغسطس</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-clock me-2"></i> 11:00 ص</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-outline-secondary me-2" data-appointment-id="4"><i class="bi bi-chat-text"></i> مشاهدة المحادثة</button>
+                                <button class="btn btn-sm btn-warning" data-appointment-id="4"><i class="bi bi-star"></i> تقييم</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card appointment-card p-3 mb-3 shadow-sm bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/13.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">د. خالد الفهد</h5>
+                                        <p class="text-muted mb-0">تخصص: أخصائي باطنية</p>
+                                        <span class="badge bg-secondary status-badge">مكتمل</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-calendar-event me-2"></i> 15 أغسطس</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-clock me-2"></i> 02:30 م</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-outline-secondary me-2" data-appointment-id="5"><i class="bi bi-chat-text"></i> مشاهدة المحادثة</button>
+                                <button class="btn btn-sm btn-warning" data-appointment-id="5"><i class="bi bi-star"></i> تقييم</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card appointment-card p-3 mb-3 shadow-sm bg-light">
+                        <div class="row align-items-center">
+                            <div class="col-md-4 expert-info">
+                                <div class="d-flex align-items-center">
+                                    <img src="img/15.jpg" alt="صورة الخبير" class="profile-img me-3">
+                                    <div>
+                                        <h5 class="fw-bold mb-1">فيصل الرشيد</h5>
+                                        <p class="text-muted mb-0">تخصص: خبير تسويق إلكتروني</p>
+                                        <span class="badge bg-secondary status-badge">مكتمل</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-calendar-event me-2"></i> 5 أغسطس</p>
+                            </div>
+                            <div class="col-md-2">
+                                <p class="mb-0 fw-bold text-secondary"><i class="bi bi-clock me-2"></i> 09:00 ص</p>
+                            </div>
+                            <div class="col-md-3 text-end">
+                                <button class="btn btn-sm btn-outline-secondary me-2" data-appointment-id="6"><i class="bi bi-chat-text"></i> مشاهدة المحادثة</button>
+                                <button class="btn btn-sm btn-warning" data-appointment-id="6"><i class="bi bi-star"></i> تقييم</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الإلغاء -->
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="cancelModalLabel">تأكيد إلغاء الموعد</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>هل أنت متأكد من رغبتك في إلغاء هذا الموعد؟</p>
+                    <div class="alert alert-warning">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        <strong>ملاحظة:</strong> إذا كان الإلغاء قبل الموعد بأقل من 24 ساعة، قد يتم خصم جزء من المبلغ.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">تراجع</button>
+                    <button type="button" class="btn btn-danger" id="confirmCancel">تأكيد الإلغاء</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- نافذة التقييم -->
+    <div class="modal fade" id="ratingModal" tabindex="-1" aria-labelledby="ratingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ratingModalLabel">تقييم الخبير</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="text-center mb-4">
+                        <h6>كيف تقيم تجربتك مع <span id="expertName">الخبير</span>؟</h6>
+                        <div class="rating-stars mb-3" id="ratingStars">
+                            <i class="bi bi-star" data-rating="1"></i>
+                            <i class="bi bi-star" data-rating="2"></i>
+                            <i class="bi bi-star" data-rating="3"></i>
+                            <i class="bi bi-star" data-rating="4"></i>
+                            <i class="bi bi-star" data-rating="5"></i>
+                        </div>
+                        <small class="text-muted" id="ratingText">اضغط على النجوم للتقييم</small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="reviewText" class="form-label">تعليقك (اختياري)</label>
+                        <textarea class="form-control" id="reviewText" rows="3" placeholder="شاركنا بتجربتك مع الخبير..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-primary-custom" id="submitRating">إرسال التقييم</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ** منطق القائمة الجانبية (Sidebar) **
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+            document.getElementById("mainContent").style.marginRight = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+            document.getElementById("mainContent").style.marginRight = "0";
+        }
+        
+        $(document).ready(function() {
+            const cancelModal = new bootstrap.Modal(document.getElementById('cancelModal'));
+            const ratingModal = new bootstrap.Modal(document.getElementById('ratingModal'));
+            
+            let currentAppointmentId = null;
+            let currentRating = 0;
+            let currentExpertName = "";
+            
+            // ** منطق زر الانضمام للمواعيد القادمة **
+            $('.btn-primary-custom[data-appointment-id]').on('click', function() {
+                const appointmentId = $(this).data('appointment-id');
+                alert(`سيتم الانتقال إلى جلسة الاستشارة رقم ${appointmentId}`);
+                // هنا يمكن إضافة التوجيه إلى صفحة الجلسة
+                // window.location.href = `consultation-session.html?id=${appointmentId}`;
+            });
+            
+            // ** منطق زر إلغاء الموعد **
+            $('.btn-outline-danger').on('click', function() {
+                currentAppointmentId = $(this).data('appointment-id');
+                cancelModal.show();
+            });
+            
+            // ** تأكيد الإلغاء **
+            $('#confirmCancel').on('click', function() {
+                alert(`تم إلغاء الموعد رقم ${currentAppointmentId} بنجاح`);
+                cancelModal.hide();
+                
+                // هنا يمكن إضافة منطق إلغاء الموعد في قاعدة البيانات
+                // ثم إعادة تحميل الصفحة أو تحديث القائمة
+            });
+            
+            // ** منطق زر مشاهدة المحادثة للمواعيد المنتهية **
+            $('.btn-outline-secondary[data-appointment-id]').on('click', function() {
+                const appointmentId = $(this).data('appointment-id');
+                alert(`سيتم عرض محادثة الموعد رقم ${appointmentId}`);
+                // هنا يمكن إضافة التوجيه إلى صفحة المحادثة
+                // window.location.href = `chat-history.html?id=${appointmentId}`;
+            });
+            
+            // ** منطق زر التقييم **
+            $('.btn-warning').on('click', function() {
+                currentAppointmentId = $(this).data('appointment-id');
+                
+                // الحصول على اسم الخبير من البطاقة
+                const expertCard = $(this).closest('.appointment-card');
+                currentExpertName = expertCard.find('.fw-bold').first().text();
+                
+                $('#expertName').text(currentExpertName);
+                ratingModal.show();
+            });
+            
+            // ** منطق النجوم للتقييم **
+            $('#ratingStars i').on('mouseenter', function() {
+                const rating = $(this).data('rating');
+                updateStars(rating);
+            });
+            
+            $('#ratingStars').on('mouseleave', function() {
+                updateStars(currentRating);
+            });
+            
+            $('#ratingStars i').on('click', function() {
+                currentRating = $(this).data('rating');
+                updateStars(currentRating);
+                updateRatingText(currentRating);
+            });
+            
+            // ** إرسال التقييم **
+            $('#submitRating').on('click', function() {
+                if (currentRating === 0) {
+                    alert('يرجى اختيار تقييم قبل الإرسال');
+                    return;
+                }
+                
+                const reviewText = $('#reviewText').val();
+                
+                // هنا يمكن إضافة منطق إرسال التقييم إلى الخادم
+                alert(`شكراً لك! تم إرسال تقييمك ${currentRating} نجوم للخبير ${currentExpertName}`);
+                
+                // إعادة تعيين النموذج
+                currentRating = 0;
+                $('#reviewText').val('');
+                updateStars(0);
+                updateRatingText(0);
+                
+                ratingModal.hide();
+            });
+            
+            // ** دالة تحديث النجوم **
+            function updateStars(rating) {
+                $('#ratingStars i').each(function() {
+                    if ($(this).data('rating') <= rating) {
+                        $(this).removeClass('bi-star').addClass('bi-star-fill');
+                    } else {
+                        $(this).removeClass('bi-star-fill').addClass('bi-star');
+                    }
+                });
+            }
+            
+            // ** دالة تحديث نص التقييم **
+            function updateRatingText(rating) {
+                const texts = [
+                    "اضغط على النجوم للتقييم",
+                    "سيء",
+                    "مقبول",
+                    "جيد",
+                    "جيد جداً",
+                    "ممتاز"
+                ];
+                $('#ratingText').text(texts[rating]);
+            }
+        });
+    </script>
+</body>
+</html>
