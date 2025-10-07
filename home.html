@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تصفح الخبراء - منصة الخبراء</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
+        body { font-family: 'Tajawal', sans-serif; background-color: #f8f9fa; }
+        .navbar-custom { background-color: #00bcd4; } 
+        
+        /* تنسيق بطاقة الخبير وتأثير الرفع المطلوب */
+        .card-expert {
+            transition: transform 0.3s, box-shadow 0.3s;
+            border-left: 5px solid #00bcd4; 
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        .card-expert:hover {
+            transform: translateY(-5px); /* تأثير الارتفاع */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* ظل أوضح */
+        }
+        .profile-img {
+            width: 70px;
+            height: 70px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #00bcd4;
+        }
+        .btn-primary-custom {
+            background-color: #00bcd4; 
+            border-color: #00bcd4;
+            color: white;
+        }
+        .btn-primary-custom:hover { background-color: #0097a7; }
+        .badge-profession { background-color: #e0f7fa; color: #0097a7; font-weight: bold; }
+        
+        /* حالات التوافر */
+        .status-available { color: #28a745; font-weight: bold; } /* أخضر للمتاح */
+        .status-unavailable { color: #dc3545; font-weight: bold; } /* أحمر لغير المتاح */
+        
+        /* تنسيق الشريط الجانبي (Sidebar) */
+        .sidebar-nav {
+            height: 100%;
+            width: 0;
+            position: fixed;
+            z-index: 1050; 
+            top: 0;
+            right: 0;
+            background-color: #0097a7; 
+            overflow-x: hidden;
+            transition: 0.5s;
+            padding-top: 60px;
+        }
+        .sidebar-nav .closebtn {
+            position: absolute;
+            top: 0;
+            left: 25px;
+            font-size: 36px;
+            margin-left: 50px;
+            color: white;
+            text-decoration: none;
+        }
+        .sidebar-nav a {
+            padding: 8px 8px 8px 32px;
+            text-decoration: none;
+            font-size: 25px;
+            color: #f1f1f1;
+            display: block;
+            transition: 0.3s;
+        }
+        .sidebar-nav a:hover {
+            color: #00bcd4;
+            background-color: #00796b;
+        }
+
+        /* تنسيق قسم "هل تحتاج إلى مساعدة؟" (الزرقاء الداكنة) */
+        .help-section {
+            background-color: #004d40;
+            color: white;
+            padding: 60px 0;
+            margin-top: 50px;
+        }
+        .instant-consultation {
+            text-align: center;
+            padding: 40px 0;
+        }
+        
+        /* تنسيقات إضافية للبحث والتصفية */
+        .search-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        
+        .category-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            z-index: 1;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+</head>
+<body>
+
+    <div id="mySidebar" class="sidebar-nav">
+        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+        
+        <a href="profile.html"><i class="bi bi-person-circle me-2"></i> الملف الشخصي</a>
+        <a href="my-appointments.html"><i class="bi bi-calendar-check me-2"></i> مواعيدي</a>
+        <a href="chat.html"><i class="bi bi-chat-dots me-2"></i> المحادثات</a>
+          <a href="booking.html"><i class="bi bi-chash me-2"></i> الدفع</a>
+        <a href="#"><i class="bi bi-gear me-2"></i> الإعدادات</a>
+        <hr class="text-white mx-3">
+        <a href="welcome.html" class="text-danger"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a>
+    </div>
+
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
+        <div class="container">
+            <button class="navbar-toggler me-3" type="button" onclick="openNav()" aria-label="Toggle navigation" style="border: none;">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <a class="navbar-brand fw-bold" href="#">منصة الخبراء</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="#">تصفح الخبراء</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">استشاراتي</a>
+                    </li>
+                </ul>
+            </div>
+            
+            <a href="welcome.html" class="btn btn-outline-light me-2">تسجيل خروج</a>
+            <span class="navbar-text text-white">مرحباً، محمد</span>
+        </div>
+    </nav>
+
+    <div class="container py-5" id="mainContent">
+        <h2 class="mb-4 text-center" style="color: #00bcd4;">ابحث عن خبيرك الآن</h2>
+
+        <div class="search-container mb-5">
+            <div class="row g-3">
+                <div class="col-md-8">
+                    <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="البحث بالاسم أو الكلمة المفتاحية...">
+                </div>
+                <div class="col-md-4">
+                    <select class="form-select form-select-lg" id="categoryFilter">
+                        <option value="all" selected>التخصص (الكل)</option>
+                        <option value="lawyer">محامون</option>
+                        <option value="doctor">أطباء</option>
+                        <option value="engineer">مهندسون</option>
+                        <option value="marketer">مسوقون</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="expertList">
+            
+            <!-- محامون -->
+            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert1" data-name="سعود القحطاني" data-profession="محامي شركات" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert1')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/11.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">سعود القحطاني</h5>
+                            <span class="badge badge-profession">محامي شركات</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">عرض خاص: تدقيق عقد تأسيس في 15 دقيقة!</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">180 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert5" data-name="فهد الحربي" data-profession="محامي جنائي" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert5')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/21.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">فهد الحربي</h5>
+                            <span class="badge badge-profession">محامي جنائي</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارة أولية مجانية في القضايا الجنائية</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">200 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span> 
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert6" data-name="لمى العتيبي" data-profession="محامية أسرة" data-available="false">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert6')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/22.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">لمى العتيبي</h5>
+                            <span class="badge badge-profession">محامية أسرة</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات قانونية في قضايا الأحوال الشخصية</p>
+                    <p class="mb-3"><span class="status-unavailable">يعود خلال 3 أيام</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">150 ر.س</span>
+                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- أطباء -->
+            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert2" data-name="د. نورة السالم" data-profession="طبيب أسرة" data-available="false">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert2')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/12.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">د. نورة السالم</h5>
+                            <span class="badge badge-profession">طبيب أسرة</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارة مجانية أولى! (10 دقائق)</p>
+                    <p class="mb-3"><span class="status-unavailable">غير متاح حالياً</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-success">مجانية</span>
+                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert7" data-name="د. خالد الفهد" data-profession="أخصائي باطنية" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert7')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/13.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">د. خالد الفهد</h5>
+                            <span class="badge badge-profession">أخصائي باطنية</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">تشخيص أولي للمشاكل الباطنية</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">220 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert8" data-name="د. سارة القاضي" data-profession="طبيبة أطفال" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert8')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/14.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">د. سارة القاضي</h5>
+                            <span class="badge badge-profession">طبيبة أطفال</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات تطعيمات ورعاية الأطفال</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">180 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- مهندسون -->
+            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert3" data-name="خالد المهنا" data-profession="مهندس مدني" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert3')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/15.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">خالد المهنا</h5>
+                            <span class="badge badge-profession">مهندس مدني</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">فحص مخطط أولي (15 دقيقة)</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">250 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert9" data-name="ناصر الشمري" data-profession="مهندس معماري" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert9')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/16.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">ناصر الشمري</h5>
+                            <span class="badge badge-profession">مهندس معماري</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">تصميم وتخطيط مساحات سكنية</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">300 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert10" data-name="أحمد الزهراني" data-profession="مهندس برمجيات" data-available="false">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert10')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/17.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">أحمد الزهراني</h5>
+                            <span class="badge badge-profession">مهندس برمجيات</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات تطوير تطبيقات ويب وجوال</p>
+                    <p class="mb-3"><span class="status-unavailable">يعود خلال يومين</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">350 ر.س</span>
+                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- مسوقون -->
+            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert4" data-name="ريم العتيبي" data-profession="استراتيجيات تسويق" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert4')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/18.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">ريم العتيبي</h5>
+                            <span class="badge badge-profession">استراتيجيات تسويق</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">تخطيط محتوى أول (10 دقائق)</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">120 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert11" data-name="فيصل الرشيد" data-profession="خبير تسويق إلكتروني" data-available="true">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert11')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/19.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">فيصل الرشيد</h5>
+                            <span class="badge badge-profession">خبير تسويق إلكتروني</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">تحسين الحملات الإعلانية على وسائل التواصل</p>
+                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">280 ر.س</span>
+                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert12" data-name="هند السعدون" data-profession="مستشارة تسويق العلامات التجارية" data-available="false">
+                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert12')">
+                    <div class="d-flex align-items-center mb-3">
+                        <img src="img/20.jpg" alt="صورة خبير" class="profile-img me-3">
+                        <div>
+                            <h5 class="mb-0">هند السعدون</h5>
+                            <span class="badge badge-profession">مستشارة تسويق العلامات التجارية</span>
+                        </div>
+                    </div>
+                    <p class="mb-2 fw-bold" style="color: #0097a7;">بناء هوية العلامة التجارية</p>
+                    <p class="mb-3"><span class="status-unavailable">يعود خلال أسبوع</span></p>
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="fs-4 fw-bold text-danger">400 ر.س</span>
+                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <div class="instant-consultation">
+        <div class="container">
+            <h3 class="fw-bold" style="color: #00bcd4;">استشارة في لحظتها</h3>
+            <p class="lead">جلسات فورية مع مختصين في مجالات متعددة، بوقت قصير وتجربة سلسة.</p>
+            <p class="text-muted fs-5">استشارة اليوم، قرار الغد.</p>
+        </div>
+    </div>
+    
+    <div class="help-section text-center">
+        <div class="container">
+            <h3 class="mb-4">هل تحتاج إلى مساعدة؟</h3>
+            <div class="row justify-content-center">
+                <div class="col-md-4">
+                    <h5 class="fw-bold">رقم التواصل:</h5>
+                    <p class="lead">(+966) 55 123 4567</p>
+                </div>
+                <div class="col-md-4">
+                    <h5 class="fw-bold">البريد الإلكتروني:</h5>
+                    <p class="lead">support@experts.sa</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // ** منطق القائمة الجانبية (Sidebar) **
+        function openNav() {
+            document.getElementById("mySidebar").style.width = "250px";
+        }
+        function closeNav() {
+            document.getElementById("mySidebar").style.width = "0";
+        }
+
+        // ** منطق التوجيه إلى الشات (مع بيانات الخبير) **
+        function redirectToChat(expertId) {
+            const expertCard = $(`[data-id="${expertId}"]`);
+            const name = expertCard.data('name');
+            const profession = expertCard.data('profession');
+            const available = expertCard.data('available');
+            
+            // تخزين بيانات الخبير في Local Storage لاستخدامها في صفحة الشات
+            const expertData = { id: expertId, name: name, profession: profession, available: available };
+            localStorage.setItem('currentExpert', JSON.stringify(expertData));
+            
+            // التوجيه إلى صفحة الشات الديناميكية
+            window.location.href = 'chat-dynamic.html';
+        }
+
+        // ** منطق الفلترة حسب التصنيف **
+        $(document).ready(function() {
+            const $expertCards = $('.expert-card');
+
+            $('#categoryFilter').on('change', function() {
+                const selectedCategory = $(this).val();
+
+                $expertCards.each(function() {
+                    const cardCategory = $(this).data('category');
+                    if (selectedCategory === 'all' || cardCategory === selectedCategory) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+            
+            // منطق البحث النصي
+            $('#searchInput').on('input', function() {
+                const searchText = $(this).val().toLowerCase();
+                
+                $expertCards.each(function() {
+                    const expertName = $(this).data('name').toLowerCase();
+                    const expertProfession = $(this).data('profession').toLowerCase();
+                    
+                    if (expertName.includes(searchText) || expertProfession.includes(searchText)) {
+                        $(this).show();
+                    } else {
+                        $(this).hide();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
