@@ -3,473 +3,761 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تصفح الخبراء - منصة الخبراء</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.rtl.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700&display=swap');
-        body { font-family: 'Tajawal', sans-serif; background-color: #f8f9fa; }
-        .navbar-custom { background-color: #00bcd4; } 
-        
-        /* تنسيق بطاقة الخبير وتأثير الرفع المطلوب */
-        .card-expert {
-            transition: transform 0.3s, box-shadow 0.3s;
-            border-left: 5px solid #00bcd4; 
-            border-radius: 8px;
-            cursor: pointer;
-        }
-        .card-expert:hover {
-            transform: translateY(-5px); /* تأثير الارتفاع */
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2); /* ظل أوضح */
-        }
-        .profile-img {
-            width: 70px;
-            height: 70px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #00bcd4;
-        }
-        .btn-primary-custom {
-            background-color: #00bcd4; 
-            border-color: #00bcd4;
-            color: white;
-        }
-        .btn-primary-custom:hover { background-color: #0097a7; }
-        .badge-profession { background-color: #e0f7fa; color: #0097a7; font-weight: bold; }
-        
-        /* حالات التوافر */
-        .status-available { color: #28a745; font-weight: bold; } /* أخضر للمتاح */
-        .status-unavailable { color: #dc3545; font-weight: bold; } /* أحمر لغير المتاح */
-        
-        /* تنسيق الشريط الجانبي (Sidebar) */
-        .sidebar-nav {
-            height: 100%;
-            width: 0;
-            position: fixed;
-            z-index: 1050; 
-            top: 0;
-            right: 0;
-            background-color: #0097a7; 
-            overflow-x: hidden;
-            transition: 0.5s;
-            padding-top: 60px;
-        }
-        .sidebar-nav .closebtn {
-            position: absolute;
-            top: 0;
-            left: 25px;
-            font-size: 36px;
-            margin-left: 50px;
-            color: white;
-            text-decoration: none;
-        }
-        .sidebar-nav a {
-            padding: 8px 8px 8px 32px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #f1f1f1;
-            display: block;
-            transition: 0.3s;
-        }
-        .sidebar-nav a:hover {
-            color: #00bcd4;
-            background-color: #00796b;
-        }
-
-        /* تنسيق قسم "هل تحتاج إلى مساعدة؟" (الزرقاء الداكنة) */
-        .help-section {
-            background-color: #004d40;
-            color: white;
-            padding: 60px 0;
-            margin-top: 50px;
-        }
-        .instant-consultation {
-            text-align: center;
-            padding: 40px 0;
-        }
-        
-        /* تنسيقات إضافية للبحث والتصفية */
-        .search-container {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            margin-bottom: 30px;
-        }
-        
-        .category-badge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            z-index: 1;
-        }
-    </style>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Chat Interface Design</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
 </head>
-<body>
+<style>
+    /* Basic Reset and RTL setup */
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f0f8ff; /* Light blue/white background */
+        direction: rtl; /* Right-to-Left for Arabic */
+        text-align: right;
+    }
 
-    <div id="mySidebar" class="sidebar-nav">
-        <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding-top: 20px;
+    }
+
+    /* --- Profile Cards Section --- */
+    .profile-cards-container {
+        display: flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+        padding: 20px 0;
+    }
+
+    .profile-card {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        padding: 15px;
+        width: 200px; /* Adjust size as needed */
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin: 10px;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-bottom: 10px;
+        border: 2px solid #5fb9c9; /* Light teal border */
+    }
+
+    .profile-info p {
+        margin: 3px 0;
+        font-size: 0.9em;
+    }
+
+    .profile-info .name {
+        font-weight: bold;
+        color: #333;
+    }
+
+    .profile-info .role {
+        color: #777;
+        font-size: 0.85em;
+    }
+
+    .profile-info .email {
+        font-size: 0.75em;
+        color: #007bff;
+    }
+
+    /* --- Chat Main Section --- */
+    .chat-main {
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+        margin: 30px 0;
+        position: relative;
+    }
+
+    .chat-main h2 {
+        text-align: center;
+        color: #444;
+        font-size: 1.2em;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .chat-box {
+        height: 250px; /* Fixed height for chat scroll */
+        overflow-y: auto;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        margin-bottom: 15px;
+    }
+
+    .message {
+        display: flex;
+        align-items: flex-end;
+        margin-bottom: 15px;
+    }
+
+    .message-avatar {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 10px; /* Space between message and avatar in RTL */
+        order: 2; /* Move avatar to the left for bot message */
+    }
+
+    .message-content {
+        padding: 10px 15px;
+        border-radius: 20px;
+        max-width: 60%;
+        font-size: 0.95em;
+        line-height: 1.4;
+    }
+
+    /* User Messages */
+    .user-message {
+        justify-content: flex-start;
+    }
+    .user-message .message-content {
+        background-color: #5fb9c9; /* Teal bubble */
+        color: white;
+        order: 1;
+    }
+
+    /* Bot Messages */
+    .bot-message {
+        justify-content: flex-end;
+    }
+    .bot-message .message-content {
+        background-color: #e6e6e6; /* Light gray bubble */
+        color: #333;
+        order: 1; /* Message on the right */
+    }
+    .bot-message .message-avatar {
+        order: 2; /* Avatar on the left */
+        margin-right: 0;
+        margin-left: 10px;
+    }
+
+    /* Chat Input Form */
+    .chat-input-form {
+        display: flex;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        overflow: hidden;
+        margin-top: 10px;
+    }
+
+    #user-input {
+        flex-grow: 1;
+        border: none;
+        padding: 10px 15px;
+        font-size: 1em;
+        outline: none;
+        text-align: right;
+    }
+
+    .send-button {
+        background-color: #5fb9c9;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    .send-button:hover {
+        background-color: #4a9ea8;
+    }
+
+    /* --- Rating Section --- */
+    .rating-section {
+        text-align: center;
+        padding: 20px 0 40px;
+    }
+
+    .stars i {
+        color: #ffd700; /* Gold color for stars */
+        font-size: 2em;
+        margin: 0 5px;
+        cursor: pointer;
+    }
+
+    .rating-section p {
+        margin-top: 10px;
+        color: #555;
+        font-size: 1.1em;
+    }
+
+    /* --- Suggestions Section --- */
+    .suggestions-container {
+        background-color: #f8f9fa;
+        border-radius: 10px;
+        padding: 15px;
+        margin-bottom: 15px;
+        border: 1px solid #e9ecef;
+    }
+
+    .suggestions-container h6 {
+        color: #5fb9c9;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    .suggestions-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 10px;
+    }
+
+    .suggestion-btn {
+        background-color: white;
+        border: 1px solid #5fb9c9;
+        color: #5fb9c9;
+        border-radius: 20px;
+        padding: 8px 15px;
+        font-size: 0.85em;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .suggestion-btn:hover {
+        background-color: #5fb9c9;
+        color: white;
+    }
+
+    .toggle-suggestions-btn {
+        background-color: #5fb9c9;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        margin-left: 10px;
+        transition: background-color 0.3s;
+    }
+
+    .toggle-suggestions-btn:hover {
+        background-color: #4a9ea8;
+    }
+
+    /* --- Sidebar --- */
+    .sidebar {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        top: 0;
+        right: 0;
+        background-color: #fff;
+        box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        z-index: 1000;
+    }
+
+    .sidebar a {
+        padding: 10px 15px;
+        text-decoration: none;
+        font-size: 1.1em;
+        color: #333;
+        display: block;
+        transition: 0.3s;
+        border-bottom: 1px solid #eee;
+    }
+
+    .sidebar a:hover {
+        background-color: #f0f8ff;
+        color: #5fb9c9;
+    }
+
+    .sidebar .close-btn {
+        position: absolute;
+        top: 10px;
+        left: 15px;
+        font-size: 2em;
+        color: #5fb9c9;
+        cursor: pointer;
+    }
+
+    .open-sidebar-btn {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        background-color: #5fb9c9;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 15px;
+        cursor: pointer;
+        font-size: 1.1em;
+        z-index: 100;
+    }
+
+    /* --- Modal Styles --- */
+    .modal-header {
+        background-color: #5fb9c9;
+        color: white;
+    }
+
+    .btn-booking-custom {
+        background-color: #5fb9c9;
+        color: white;
+        border: none;
+    }
+
+    .btn-booking-custom:hover {
+        background-color: #4a9ea8;
+        color: white;
+    }
+
+    .payment-icon {
+        text-align: center;
+        font-size: 3em;
+        color: #5fb9c9;
+        margin-bottom: 15px;
+    }
+
+    /* --- Responsive Adjustments --- */
+    @media (max-width: 768px) {
+        .profile-cards-container {
+            justify-content: center;
+        }
         
-        <a href="profile.html"><i class="bi bi-person-circle me-2"></i> الملف الشخصي</a>
-        <a href="my-appointments.html"><i class="bi bi-calendar-check me-2"></i> مواعيدي</a>
-        <a href="chat.html"><i class="bi bi-chat-dots me-2"></i> المحادثات</a>
-          <a href="booking.html"><i class="bi bi-chash me-2"></i> الدفع</a>
-        <a href="#"><i class="bi bi-gear me-2"></i> الإعدادات</a>
-        <hr class="text-white mx-3">
-        <a href="welcome.html" class="text-danger"><i class="bi bi-box-arrow-right me-2"></i> تسجيل الخروج</a>
+        .profile-card {
+            width: 150px;
+            margin: 5px;
+        }
+        
+        .suggestions-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+<body>
+    <!-- زر فتح القائمة الجانبية -->
+    <button class="open-sidebar-btn" onclick="openNav()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- القائمة الجانبية -->
+    <div id="mySidebar" class="sidebar">
+        <a href="javascript:void(0)" class="close-btn" onclick="closeNav()">&times;</a>
+        <a href="client-browse.html"><i class="fas fa-home"></i> الرئيسية</a>
+        <a href="my-appointment.html"><i class="fas fa-calendar-alt"></i> مواعيدي</a>
+        <a href="profile.html"><i class="fas fa-user"></i> ملفي الشخصي</a>
+        <a href="home.html"><i class="fas fa-cog"></i> خبراء </a>
+        <a href="#"><i class="fas fa-question-circle"></i> المساعدة</a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a>
     </div>
 
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom shadow-sm">
-        <div class="container">
-            <button class="navbar-toggler me-3" type="button" onclick="openNav()" aria-label="Toggle navigation" style="border: none;">
-                <span class="navbar-toggler-icon"></span>
-            </button>
+    <div class="container">
+        <header class="profile-cards-container">
+            <div class="profile-card">
+                <img src="img/22.jpg" alt="Profile Image" class="profile-img">
+                <div class="profile-info">
+                    <p class="name">فيصل صالح</p>
+                    <p class="role">طبيب</p>
+                    <p class="email">faisal.saleh@gmail.com</p>
+                </div>
+            </div>
+            <div class="profile-card">
+                <img src="img/11.jpg" alt="Profile Image" class="profile-img">
+                <div class="profile-info">
+                    <p class="name">رائد عبدالله</p>
+                    <p class="role">مسوق</p>
+                    <p class="email">raed.abdullah@gmail.com</p>
+                </div>
+            </div>
+            <div class="profile-card">
+                <img src="img/15.jpg" alt="Profile Image" class="profile-img">
+                <div class="profile-info">
+                    <p class="name">هلال بندر</p>
+                    <p class="role">محاسب</p>
+                    <p class="email">talal.bandar@gmail.com</p>
+                </div>
+            </div>
+            <div class="profile-card">
+                <img src="img/13.jpg" alt="Profile Image" class="profile-img">
+                <div class="profile-info">
+                    <p class="name">سلطان خالد</p>
+                    <p class="role">مهندس</p>
+                    <p class="email">sultan.khalid@gmail.com</p>
+                </div>
+            </div>
+        </header>
+        
+        <main class="chat-main">
+            <h2>محادثة فورية</h2>
             
-            <a class="navbar-brand fw-bold" href="#">منصة الخبراء</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">تصفح الخبراء</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">استشاراتي</a>
-                    </li>
-                </ul>
-            </div>
-            
-            <a href="welcome.html" class="btn btn-outline-light me-2">تسجيل خروج</a>
-            <span class="navbar-text text-white">مرحباً، محمد</span>
-        </div>
-    </nav>
-
-    <div class="container py-5" id="mainContent">
-        <h2 class="mb-4 text-center" style="color: #00bcd4;">ابحث عن خبيرك الآن</h2>
-
-        <div class="search-container mb-5">
-            <div class="row g-3">
-                <div class="col-md-8">
-                    <input type="text" id="searchInput" class="form-control form-control-lg" placeholder="البحث بالاسم أو الكلمة المفتاحية...">
-                </div>
-                <div class="col-md-4">
-                    <select class="form-select form-select-lg" id="categoryFilter">
-                        <option value="all" selected>التخصص (الكل)</option>
-                        <option value="lawyer">محامون</option>
-                        <option value="doctor">أطباء</option>
-                        <option value="engineer">مهندسون</option>
-                        <option value="marketer">مسوقون</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-
-        <div class="row g-4" id="expertList">
-            
-            <!-- محامون -->
-            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert1" data-name="سعود القحطاني" data-profession="محامي شركات" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert1')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/11.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">سعود القحطاني</h5>
-                            <span class="badge badge-profession">محامي شركات</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">عرض خاص: تدقيق عقد تأسيس في 15 دقيقة!</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">180 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span> 
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert5" data-name="فهد الحربي" data-profession="محامي جنائي" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert5')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/21.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">فهد الحربي</h5>
-                            <span class="badge badge-profession">محامي جنائي</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارة أولية مجانية في القضايا الجنائية</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">200 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span> 
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="lawyer" data-id="expert6" data-name="لمى العتيبي" data-profession="محامية أسرة" data-available="false">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert6')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/22.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">لمى العتيبي</h5>
-                            <span class="badge badge-profession">محامية أسرة</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات قانونية في قضايا الأحوال الشخصية</p>
-                    <p class="mb-3"><span class="status-unavailable">يعود خلال 3 أيام</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">150 ر.س</span>
-                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- أطباء -->
-            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert2" data-name="د. نورة السالم" data-profession="طبيب أسرة" data-available="false">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert2')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/12.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">د. نورة السالم</h5>
-                            <span class="badge badge-profession">طبيب أسرة</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارة مجانية أولى! (10 دقائق)</p>
-                    <p class="mb-3"><span class="status-unavailable">غير متاح حالياً</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-success">مجانية</span>
-                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert7" data-name="د. خالد الفهد" data-profession="أخصائي باطنية" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert7')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/13.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">د. خالد الفهد</h5>
-                            <span class="badge badge-profession">أخصائي باطنية</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">تشخيص أولي للمشاكل الباطنية</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">220 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="doctor" data-id="expert8" data-name="د. سارة القاضي" data-profession="طبيبة أطفال" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert8')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/14.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">د. سارة القاضي</h5>
-                            <span class="badge badge-profession">طبيبة أطفال</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات تطعيمات ورعاية الأطفال</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">180 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- مهندسون -->
-            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert3" data-name="خالد المهنا" data-profession="مهندس مدني" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert3')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/15.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">خالد المهنا</h5>
-                            <span class="badge badge-profession">مهندس مدني</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">فحص مخطط أولي (15 دقيقة)</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">250 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert9" data-name="ناصر الشمري" data-profession="مهندس معماري" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert9')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/16.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">ناصر الشمري</h5>
-                            <span class="badge badge-profession">مهندس معماري</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">تصميم وتخطيط مساحات سكنية</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">300 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="engineer" data-id="expert10" data-name="أحمد الزهراني" data-profession="مهندس برمجيات" data-available="false">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert10')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/17.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">أحمد الزهراني</h5>
-                            <span class="badge badge-profession">مهندس برمجيات</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">استشارات تطوير تطبيقات ويب وجوال</p>
-                    <p class="mb-3"><span class="status-unavailable">يعود خلال يومين</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">350 ر.س</span>
-                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
-                    </div>
-                </div>
-            </div>
-
-            <!-- مسوقون -->
-            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert4" data-name="ريم العتيبي" data-profession="استراتيجيات تسويق" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert4')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/18.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">ريم العتيبي</h5>
-                            <span class="badge badge-profession">استراتيجيات تسويق</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">تخطيط محتوى أول (10 دقائق)</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">120 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert11" data-name="فيصل الرشيد" data-profession="خبير تسويق إلكتروني" data-available="true">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert11')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/19.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">فيصل الرشيد</h5>
-                            <span class="badge badge-profession">خبير تسويق إلكتروني</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">تحسين الحملات الإعلانية على وسائل التواصل</p>
-                    <p class="mb-3"><span class="status-available">متاح للحجز الآن</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">280 ر.س</span>
-                        <span class="btn btn-sm btn-primary-custom">حجز موعد</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 expert-card" data-category="marketer" data-id="expert12" data-name="هند السعدون" data-profession="مستشارة تسويق العلامات التجارية" data-available="false">
-                <div class="card card-expert p-3 h-100" onclick="redirectToChat('expert12')">
-                    <div class="d-flex align-items-center mb-3">
-                        <img src="img/20.jpg" alt="صورة خبير" class="profile-img me-3">
-                        <div>
-                            <h5 class="mb-0">هند السعدون</h5>
-                            <span class="badge badge-profession">مستشارة تسويق العلامات التجارية</span>
-                        </div>
-                    </div>
-                    <p class="mb-2 fw-bold" style="color: #0097a7;">بناء هوية العلامة التجارية</p>
-                    <p class="mb-3"><span class="status-unavailable">يعود خلال أسبوع</span></p>
-                    <div class="d-flex justify-content-between align-items-center mt-auto">
-                        <span class="fs-4 fw-bold text-danger">400 ر.س</span>
-                        <span class="btn btn-sm btn-outline-secondary">طلب استشارة</span>
-                    </div>
+            <!-- اقتراحات البوت -->
+            <div class="suggestions-container" id="botSuggestions">
+                <h6 class="welcome-message">اختر أحد الاقتراحات التالية:</h6>
+                <div class="suggestions-grid" id="suggestionsList">
+                    <!-- سيتم ملؤها بالجافاسكريبت -->
                 </div>
             </div>
             
+            <div class="chat-box" id="chat-box">
+                <div class="message user-message">
+                    <span class="message-content">مرحباً</span>
+                </div>
+                <div class="message bot-message">
+                    <img src="img/16.jpg" alt="Bot" class="message-avatar">
+                    <span class="message-content">مرحباً بك! كيف يمكنني مساعدتك اليوم؟</span>
+                </div>
+            </div>
+            
+            <form id="chat-form" class="chat-input-form">
+                <button type="button" id="toggleSuggestions" class="toggle-suggestions-btn">
+                    <i class="fas fa-lightbulb"></i>
+                </button>
+                <input type="text" id="user-input" placeholder="اكتب رسالتك..." required>
+                <button type="submit" class="send-button">إرسال</button>
+            </form>
+        </main>
+
+        <section class="rating-section">
+            <div class="stars">
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+                <i class="fas fa-star"></i>
+            </div>
+            <p>اختر تقييمك</p>
+        </section>
+    </div>
+
+    <!-- نافذة حجز الموعد -->
+    <div class="modal fade" id="bookingModal" tabindex="-1" aria-labelledby="bookingModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="bookingModalLabel">حجز موعد مع الخبير</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="bookingForm">
+                        <div class="mb-3">
+                            <label for="bookingDate" class="form-label">اختر التاريخ</label>
+                            <input type="date" class="form-control" id="bookingDate" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="bookingTime" class="form-label">اختر الوقت</label>
+                            <select class="form-select" id="bookingTime" required>
+                                <option value="" selected disabled>اختر الوقت المناسب</option>
+                                <option value="09:00">09:00 صباحاً</option>
+                                <option value="10:00">10:00 صباحاً</option>
+                                <option value="11:00">11:00 صباحاً</option>
+                                <option value="12:00">12:00 ظهراً</option>
+                                <option value="13:00">01:00 مساءً</option>
+                                <option value="14:00">02:00 مساءً</option>
+                                <option value="15:00">03:00 مساءً</option>
+                                <option value="16:00">04:00 مساءً</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="sessionType" class="form-label">نوع الجلسة</label>
+                            <select class="form-select" id="sessionType" required>
+                                <option value="video" selected>مكالمة فيديو</option>
+                                <option value="audio">مكالمة صوتية</option>
+                                <option value="chat">محادثة نصية</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label for="notes" class="form-label">ملاحظات إضافية (اختياري)</label>
+                            <textarea class="form-control" id="notes" rows="3" placeholder="أي ملاحظات إضافية تود إضافتها..."></textarea>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-booking-custom" id="confirmBooking">تأكيد الحجز</button>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="instant-consultation">
-        <div class="container">
-            <h3 class="fw-bold" style="color: #00bcd4;">استشارة في لحظتها</h3>
-            <p class="lead">جلسات فورية مع مختصين في مجالات متعددة، بوقت قصير وتجربة سلسة.</p>
-            <p class="text-muted fs-5">استشارة اليوم، قرار الغد.</p>
-        </div>
-    </div>
-    
-    <div class="help-section text-center">
-        <div class="container">
-            <h3 class="mb-4">هل تحتاج إلى مساعدة؟</h3>
-            <div class="row justify-content-center">
-                <div class="col-md-4">
-                    <h5 class="fw-bold">رقم التواصل:</h5>
-                    <p class="lead">(+966) 55 123 4567</p>
+    <!-- نافذة الدفع المطلوب -->
+    <div class="modal fade" id="paymentRequiredModal" tabindex="-1" aria-labelledby="paymentRequiredModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentRequiredModalLabel">إتمام عملية الدفع</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="col-md-4">
-                    <h5 class="fw-bold">البريد الإلكتروني:</h5>
-                    <p class="lead">support@experts.sa</p>
+                <div class="modal-body">
+                    <div class="payment-icon">
+                        <i class="fas fa-credit-card"></i>
+                    </div>
+                    <h4 class="mb-3">حجزك في انتظار الدفع</h4>
+                    <p class="mb-4">لإكمال عملية الحجز، يرجى إتمام عملية الدفع لتأمين موعدك مع الخبير.</p>
+                    
+                    <div class="payment-details">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>الخبير:</span>
+                            <strong id="paymentExpertName">المحامي سعود القحطاني</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>التاريخ والوقت:</span>
+                            <strong id="paymentDateTime">الأربعاء, 8 أكتوبر - 01:30 م</strong>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>نوع الجلسة:</span>
+                            <strong id="paymentSessionType">مكالمة فيديو</strong>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <span>المبلغ المستحق:</span>
+                            <strong id="paymentAmount">180 ر.س</strong>
+                        </div>
+                    </div>
+                    
+                    <div class="alert alert-info mt-4">
+                        <i class="fas fa-info-circle me-2"></i>
+                        <strong>ملاحظة:</strong> سيتم إلغاء الحجز تلقائياً إذا لم يتم الدفع خلال 15 دقيقة.
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary me-2" data-bs-dismiss="modal">إلغاء</button>
+                    <button type="button" class="btn btn-success btn-lg" id="proceedToPayment">
+                        <i class="fas fa-credit-card me-2"></i> الانتقال للدفع
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // ** منطق القائمة الجانبية (Sidebar) **
+        document.addEventListener('DOMContentLoaded', () => {
+            const chatForm = document.getElementById('chat-form');
+            const userInput = document.getElementById('user-input');
+            const chatBox = document.getElementById('chat-box');
+            const toggleSuggestionsBtn = document.getElementById('toggleSuggestions');
+            const botSuggestions = document.getElementById('botSuggestions');
+            const suggestionsList = document.getElementById('suggestionsList');
+            const bookingModal = new bootstrap.Modal(document.getElementById('bookingModal'));
+            const paymentRequiredModal = new bootstrap.Modal(document.getElementById('paymentRequiredModal'));
+
+            // Array of random bot responses
+            const botResponses = [
+                "شكراً لك على رسالتك، سأقوم بتحويلك للموظف المختص قريباً.",
+                "أهلاً بك! كيف يمكنني مساعدتك اليوم؟",
+                "تم استلام رسالتك بنجاح. سنرد عليك في أقرب وقت ممكن.",
+                "رسالة جميلة، شكراً لتواصلك معنا.",
+                "مرحباً! نعتذر عن التأخير، هل ما زلت بحاجة للمساعدة؟"
+            ];
+
+            // اقتراحات البوت
+            const botSuggestionsList = [
+                { id: 1, text: 'كيف أحجز جلسة استشارية؟', reply: 'للحجز، يرجى النقر على زر "حجز موعد" في الأعلى وتحديد الوقت المتاسب. يتم تأكيد الحجز بعد الدفع.' },
+                { id: 2, text: 'ما هي تكلفة الجلسة الاستشارية؟', reply: 'أسعار الجلسات تبدأ من 150 ريال لمدة 15 دقيقة. تختلف الأسعار حسب مدة ونوع الاستشارة.' },
+                { id: 3, text: 'هل يمكنني إعادة جدولة موعدي؟', reply: 'نعم، يمكنك إعادة جدولة موعدك من خلال صفحة "مواعيدي" في القائمة الجانبية، بشرط أن يكون قبل 24 ساعة من الموعد الأصلي.' },
+                { id: 4, text: 'ما هي طرق الدفع المتاحة؟', reply: 'نقبل الدفع ببطاقات الائتمان والمدى وحوالات بنكية وتحويلات إلكترونية.' },
+                { id: 5, text: 'هل الجلسات سرية وآمنة؟', reply: 'نعم، جميع الجلسات سرية ومشفرة. نحن نلتزم بمعايير الخصوصية والأمان لحماية معلوماتك.' },
+                { id: 6, text: 'كيف أستعد للجلسة الأولى؟', reply: 'ننصح بتجهيز الأسئلة والوثائق المتعلقة باستفسارك مسبقاً لتحقيق أقصى استفادة من الجلسة.' }
+            ];
+
+            // تعبئة اقتراحات البوت
+            botSuggestionsList.forEach(suggestion => {
+                const button = document.createElement('button');
+                button.className = 'suggestion-btn';
+                button.textContent = suggestion.text;
+                button.dataset.id = suggestion.id;
+                button.addEventListener('click', () => {
+                    const selectedSuggestion = botSuggestionsList.find(s => s.id === suggestion.id);
+                    if (selectedSuggestion) {
+                        addUserMessage(selectedSuggestion.text);
+                        setTimeout(() => {
+                            addBotMessage(selectedSuggestion.reply);
+                        }, 1000);
+                    }
+                });
+                suggestionsList.appendChild(button);
+            });
+
+            // إظهار/إخفاء الاقتراحات
+            toggleSuggestionsBtn.addEventListener('click', () => {
+                if (botSuggestions.style.display === 'none') {
+                    botSuggestions.style.display = 'block';
+                    toggleSuggestionsBtn.innerHTML = '<i class="fas fa-lightbulb"></i>';
+                } else {
+                    botSuggestions.style.display = 'none';
+                    toggleSuggestionsBtn.innerHTML = '<i class="far fa-lightbulb"></i>';
+                }
+            });
+
+            chatForm.addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevent page refresh
+
+                const userMessageText = userInput.value.trim();
+                if (userMessageText === "") return;
+
+                // 1. Add User Message
+                addUserMessage(userMessageText);
+
+                // 2. Clear input
+                userInput.value = '';
+
+                // 3. Simulate Bot Response with a slight delay
+                setTimeout(() => {
+                    sendBotResponse();
+                }, 1000); // 1 second delay
+            });
+
+            /**
+             * Adds a message bubble to the chat box.
+             * @param {string} text - The message content.
+             * @param {boolean} isBot - True if the message is from the bot, false for user.
+             */
+            function addMessageToChat(text, isBot) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                messageDiv.classList.add(isBot ? 'bot-message' : 'user-message');
+
+                const contentSpan = document.createElement('span');
+                contentSpan.classList.add('message-content');
+                contentSpan.textContent = text;
+                
+                if (isBot) {
+                    const avatarImg = document.createElement('img');
+                    avatarImg.src = "https://via.placeholder.com/30"; // Use the actual path for the bot's image
+                    avatarImg.alt = "Bot";
+                    avatarImg.classList.add('message-avatar');
+                    messageDiv.appendChild(contentSpan);
+                    messageDiv.appendChild(avatarImg); // Avatar goes on the left in RTL for bot
+                } else {
+                    messageDiv.appendChild(contentSpan);
+                }
+
+                chatBox.appendChild(messageDiv);
+                
+                // Scroll to the latest message
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }
+
+            /**
+             * Selects a random response and sends it from the bot.
+             */
+            function sendBotResponse() {
+                const randomIndex = Math.floor(Math.random() * botResponses.length);
+                const randomResponse = botResponses[randomIndex];
+                addBotMessage(randomResponse);
+            }
+            
+            /**
+             * Function to display the user message in the chat box.
+             */
+            function addUserMessage(text) {
+                addMessageToChat(text, false);
+            }
+
+            /**
+             * Function to display the bot message in the chat box.
+             */
+            function addBotMessage(text) {
+                addMessageToChat(text, true);
+            }
+
+            // إضافة زر حجز موعد
+            const bookingButton = document.createElement('button');
+            bookingButton.className = 'btn btn-booking-custom';
+            bookingButton.style.margin = '10px auto';
+            bookingButton.style.display = 'block';
+            bookingButton.innerHTML = '<i class="fas fa-calendar-check"></i> حجز موعد';
+            bookingButton.addEventListener('click', () => {
+                // تعيين الحد الأدنى للتاريخ (اليوم)
+                const today = new Date().toISOString().split('T')[0];
+                document.getElementById('bookingDate').setAttribute('min', today);
+                
+                // فتح نافذة حجز الموعد
+                bookingModal.show();
+            });
+            
+            // إضافة زر الحجز إلى واجهة المحادثة
+            document.querySelector('.chat-main').insertBefore(bookingButton, document.querySelector('.chat-input-form'));
+
+            // تأكيد الحجز
+            document.getElementById('confirmBooking').addEventListener('click', function() {
+                const bookingDate = document.getElementById('bookingDate').value;
+                const bookingTime = document.getElementById('bookingTime').value;
+                const sessionType = document.getElementById('sessionType').value;
+                const notes = document.getElementById('notes').value;
+                
+                if (bookingDate && bookingTime && sessionType) {
+                    // إضافة رسالة تأكيد الحجز في المحادثة
+                    addUserMessage(`لقد قمت بحجز موعد بتاريخ ${formatDate(bookingDate)} الساعة ${bookingTime} (${sessionType === 'video' ? 'مكالمة فيديو' : sessionType === 'audio' ? 'مكالمة صوتية' : 'محادثة نصية'})`);
+                    
+                    // إغلاق نافذة الحجز
+                    bookingModal.hide();
+                    
+                    // إعادة تعيين النموذج
+                    document.getElementById('bookingForm').reset();
+                    
+                    // رد البوت بعد الحجز
+                    setTimeout(() => {
+                        addBotMessage('تم تأكيد حجز موعدك بنجاح! 📅 الرجاء إتمام عملية الدفع لتأمين الموعد.');
+                    }, 1000);
+                    
+                    // إظهار نافذة الدفع المطلوب بعد تأكيد الحجز
+                    setTimeout(() => {
+                        // تعبئة بيانات الدفع في النافذة المنبثقة
+                        document.getElementById('paymentExpertName').textContent = 'فيصل صالح';
+                        document.getElementById('paymentDateTime').textContent = `${formatDate(bookingDate)} - ${bookingTime}`;
+                        document.getElementById('paymentSessionType').textContent = sessionType === 'video' ? 'مكالمة فيديو' : sessionType === 'audio' ? 'مكالمة صوتية' : 'محادثة نصية';
+                        document.getElementById('paymentAmount').textContent = '180 ر.س';
+                        
+                        // إظهار نافذة الدفع المطلوب
+                        paymentRequiredModal.show();
+                    }, 2500);
+                } else {
+                    alert('يرجى ملء جميع الحقول المطلوبة');
+                }
+            });
+
+            // الانتقال للدفع
+            document.getElementById('proceedToPayment').addEventListener('click', function() {
+                paymentRequiredModal.hide();
+                addBotMessage('تمت عملية الدفع بنجاح! ✅ سيصلك تأكيد الحجز عبر البريد الإلكتروني.');
+            });
+
+            // دالة لتحويل التاريخ إلى تنسيق عربي
+            function formatDate(dateString) {
+                const date = new Date(dateString);
+                const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                return date.toLocaleDateString('ar-SA', options);
+            }
+        });
+
+        // منطق القائمة الجانبية
         function openNav() {
             document.getElementById("mySidebar").style.width = "250px";
         }
+
         function closeNav() {
             document.getElementById("mySidebar").style.width = "0";
         }
-
-        // ** منطق التوجيه إلى الشات (مع بيانات الخبير) **
-        function redirectToChat(expertId) {
-            const expertCard = $(`[data-id="${expertId}"]`);
-            const name = expertCard.data('name');
-            const profession = expertCard.data('profession');
-            const available = expertCard.data('available');
-            
-            // تخزين بيانات الخبير في Local Storage لاستخدامها في صفحة الشات
-            const expertData = { id: expertId, name: name, profession: profession, available: available };
-            localStorage.setItem('currentExpert', JSON.stringify(expertData));
-            
-            // التوجيه إلى صفحة الشات الديناميكية
-            window.location.href = 'chat-dynamic.html';
-        }
-
-        // ** منطق الفلترة حسب التصنيف **
-        $(document).ready(function() {
-            const $expertCards = $('.expert-card');
-
-            $('#categoryFilter').on('change', function() {
-                const selectedCategory = $(this).val();
-
-                $expertCards.each(function() {
-                    const cardCategory = $(this).data('category');
-                    if (selectedCategory === 'all' || cardCategory === selectedCategory) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-            
-            // منطق البحث النصي
-            $('#searchInput').on('input', function() {
-                const searchText = $(this).val().toLowerCase();
-                
-                $expertCards.each(function() {
-                    const expertName = $(this).data('name').toLowerCase();
-                    const expertProfession = $(this).data('profession').toLowerCase();
-                    
-                    if (expertName.includes(searchText) || expertProfession.includes(searchText)) {
-                        $(this).show();
-                    } else {
-                        $(this).hide();
-                    }
-                });
-            });
-        });
     </script>
 </body>
 </html>
